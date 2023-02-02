@@ -1,3 +1,11 @@
 numpy
 pandas
+matplotlib
+tifffile
 tqdm
+psutil
+opencv-python
+scipy
+scikit-learn
+scikit-image
+netgraph

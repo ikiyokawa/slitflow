@@ -1,6 +1,6 @@
 # Slitflow
 
-A Python framework for single-molecule trajectory and localization
+A Python framework for single-molecule dynamics and localization
 analysis.
 
 ## Installation
