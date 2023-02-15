@@ -12,4 +12,15 @@ connecting simple task objects corresponding to each result file.
 
 Slitflow is designed by considering users who develop analysis tools,
 validate multiple analysis methods, reproduce workflows without programming
-skills, and use results without installing the software.
+skills, and use results without installing the software. 
+
+.. toctree::
+   :maxdepth: 2
+
+   Getting Started <getting_started>
+   User Guide <user_guide>
+   Examples <examples>
+   Development <develop>
+   About <about>
+   Changelog <changelog>
+   API Reference <api/slitflow>
