@@ -2,8 +2,8 @@ numpy
 pandas
 matplotlib
 tifffile
-tqdm
-psutil
+tqdm # progress bar
+psutil # memory usage
 opencv-python
 scipy
 scikit-learn

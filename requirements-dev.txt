@@ -1,0 +1,9 @@
+flake8
+autopep8
+pytest
+pytest-cov
+sphinx
+sphinx-rtd-theme
+docutils==0.16
+doc8
+notebook

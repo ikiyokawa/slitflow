@@ -1,0 +1,15 @@
+scikit-posthocs
+seaborn
+fast-histogram
+trackpy
+tensorflow
+pims_nd2
+openpyxl
+munkres # trj.laptrack.LapLink
+umap-learn
+
+tramway
+polytope
+cvxopt
+stopit
+git+https://gitlab.com/yumaitou/Spot-On-cli.git@py310
