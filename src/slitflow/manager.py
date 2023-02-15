@@ -3,6 +3,7 @@ import re
 import gc
 import shutil
 import json
+import glob
 
 import numpy as np
 import pandas as pd
@@ -103,7 +104,7 @@ class Pipeline():
         class_name = self.set_class_name(class_name)
         run_mode = self.set_run_mode(run_mode)
         address = self.set_address(address)
-        grp_name = self.set_grp_name(grp_name)
+        grp_name = self.set_grp_name(address[0], grp_name)
         ana_name = self.set_ana_name(ana_name)
         reqs_address = self.set_reqs_address(reqs_address)
         obs_names = self.set_obs_names(obs_names)
@@ -128,8 +129,6 @@ class Pipeline():
             class_name = info.fullname(class_name)
         elif not isinstance(class_name, str):
             raise Exception("Set class name as string.")
-        class_name = re.sub("^slitflow", "sf", class_name)
-        class_name = re.sub("^ta", "sf", class_name)
         class_name = re.sub("^slitflow", "sf", class_name)
         if class_name[:2] == "sf" or class_name[:4] == "Copy" or\
                 class_name[:6] == "Delete":
@@ -181,7 +180,7 @@ class Pipeline():
             raise Exception("Address tuple should be (group_no, analysis_no).")
         return address
 
-    def set_grp_name(self, grp_name):
+    def set_grp_name(self, grp_no, grp_name):
         """Check input group name.
 
         Additional restrictions will be written here.
@@ -192,8 +191,16 @@ class Pipeline():
         Returns:
             str: Group name
         """
-        if not grp_name or grp_name is np.nan:
-            return ''
+        if not grp_name or \
+                (not isinstance(grp_name, str) and np.isnan(grp_name)):
+            grp_id = "g" + str(grp_no)
+            path = os.path.join(self.root_dir, grp_id + "_*")
+            if len(glob.glob(path)) > 0:
+                grp_dir = glob.glob(path)[0]
+                end_no = re.match(".*" + grp_id + "_", grp_dir).end()
+                grp_name = grp_dir[end_no:]
+            else:
+                grp_name = ""
         if not isinstance(grp_name, str):
             raise Exception("Group name should be string.")
         return grp_name
