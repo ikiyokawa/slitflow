@@ -39,7 +39,7 @@ class ToTiff(RGB):
             should be the relative positions of figure size (0-1). Line color
             should be [R(0-255), G(0-255), B(0-255)]. This parameter requires
             "limit", "size" and "length_unit" to reqs[0].
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         slitflow.img.image.RGB: Image of figure

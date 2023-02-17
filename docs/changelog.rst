@@ -23,7 +23,7 @@ Bug fixes
 * Fixed bug in :class:`~slitflow.fig.figure.ToTiff` raising ValueError related
   with matplotlib.Figure.canvas.draw on macOS backend.
 * Fixed bug in :class:`~slitflow.manager.Pipeline.set_grp_name` related with
-  loading csv files.
+  loading CSV files.
 
 
 Identified issues

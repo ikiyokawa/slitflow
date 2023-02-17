@@ -38,7 +38,7 @@ class StepAtLeast(Table):
                 trajectory number column.
 
         Returns:
-            pandas.DataFrame: Selected trajectory Table
+            pandas.DataFrame: Selected trajectory table
         """
         df = reqs[0].copy()
         grouped = df.groupby(rl(param["index_cols"]))
@@ -83,7 +83,7 @@ class StepRange(Table):
                 trajectory number column.
 
         Returns:
-            pandas.DataFrame: Selected trajectory Table
+            pandas.DataFrame: Selected trajectory table
         """
         df = reqs[0].copy()
         grouped = df.groupby(rl(param["index_cols"]))

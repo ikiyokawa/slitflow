@@ -24,6 +24,11 @@ class Loop(object):
 class NumberLoop(Loop):
     """Integer of float loop generator for matplotlib figure.
 
+    Args:
+        numbers (int or float or list): Numbers for style loop.
+
+    Yields:
+        int or float: The next number in the range of numbers
     """
 
     def set_items(self, items):
@@ -38,12 +43,26 @@ class ColorLoop(Loop):
     """RGB color generator for matplotlib figure.
 
     Args:
-        colors (str): Name for edge and face color list.
+        colors (str or list): Name for edge or face color list.
+            If list of int, this always returns a list which is
+            it divided by 255.
 
-    Returns:
-        list of list of list: Nested list containing [list of RGB values for
-        edge, list of RGB values for face]. RGB values should be [R(0-255),
-        G(0-255), B(0-255)].
+            If list of list of int, this returns a list which is
+            a element of it divided by 255 in order.
+
+            If list of str, this returns a list which is a element of
+            a palette registered in this class divided by 255 in order.
+
+            TODO: Future plan
+            (If list of (palette, list of int), where type(palette) belong to
+            above three, this creates a new palette by patch-working palettes
+            in the list, and returns a list according to the palette.
+            e.g, [([0,0,0], [1,2]), ([[1,1,1], [2,2,2]], 4)] let create
+            a new palette [[1,1,1], [0,0,0], [0,0,0], [2,2,2]].)
+
+    Yields:
+        list of float: The next RGB values. RGB values should be [R(0-1),
+        G(0-1), B(0-1)]
     """
 
     palette = {
@@ -92,8 +111,8 @@ class LineStyleLoop(Loop):
     Args:
         styles (str or list): Style string for line style.
 
-    Returns:
-        list: Line style string generator
+    Yields:
+        str: The next style string
     """
 
     style_dict = {
@@ -132,8 +151,8 @@ class MarkerStyleLoop(Loop):
     Args:
         styles (str or list): Style string for marker style.
 
-    Returns:
-        list: Marker style string generator
+    Yields:
+        str: The next marker style string
     """
 
     palette = {"default": ["o", "s", "^", "x", "v"],

@@ -15,7 +15,7 @@ class All(Figure):
         param["trj_depth"] (int): Column depth of trajectory number.
         param["centered"] (bool, optional): If True, the centroid position from
             all trajectory positions is set as (0, 0).
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Figure: Trajectory Figure object
@@ -47,7 +47,7 @@ class All(Figure):
             reqs[0] (pandas.DataFrame): X,Y-coordinate of trajectories.
             param["trj_depth"] (int): Column depth of trajectory number.
             param["calc_cols"] (list of str): Column names for X and Y axes.
-            param["index_cols"] (list of str, optional): Column names of index.
+            param["index_cols"] (list of str): Column names of index.
                 This column is used for :meth:`pandas.DataFrame.groupby`.
             param["centered"] (bool, optional): If True, the centroid position
                 from all trajectory positions is set as (0, 0).
@@ -81,10 +81,10 @@ class StyleAll(Basic):
     Args:
         reqs[0] (Figure): Trajectory Figure.
         param["half_width"] (float, optional): Half width of rendering axes in
-            ``length_unit``. Used if trajectory is centered.
+            length_unit. Used if trajectory is centered.
 
     Returns:
-        Figure: Styled figure object
+        Figure: Styled Figure object
     """
 
     def set_info(self, param={}):

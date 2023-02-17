@@ -179,8 +179,8 @@ class Info():
         """Add current file number list of split data.
 
         Args:
-            file_nos (list, numpy.ndarray like): File numbers corresponding to
-            the split data.
+            file_nos (array-like): File numbers corresponding to
+                the split data.
         """
         stash_split_depth = self.split_depth()
         if file_nos is None:  # fill from index
@@ -273,7 +273,7 @@ class Info():
 
         Args:
             depth (int): Column depth. If None then set as the last depth + 1.
-            name (str): Column name used for :class:`pandas.DataFrame``
+            name (str): Column name used for :class:`pandas.DataFrame`
                 columns.
             type (str): Value type.
             unit (str): Unit of column value.
@@ -350,11 +350,11 @@ class Info():
         """Get column names from the column property.
 
         Args:
-            type (str) : Column type to return.
+            type (str) : Column type to return
 
-                * ``all`` : All column names.
-                * ``index`` : Column names that have depth > 0.
-                * ``col`` : Column names that do not belong to the index.
+                * "all" : all column names.
+                * "index" : column names whose depth > 0.
+                * "col" : column names that do not belong to the index.
 
         Returns:
             list of str: List of column names
@@ -388,7 +388,7 @@ class Info():
         """Get column type dict for DataFrame dtype.
 
         Returns:
-            dict: Dictionary of column types.
+            dict: Dictionary of column types
         """
         type_dict = {}
         names = [d["name"] for d in self.column]
@@ -530,7 +530,7 @@ class Info():
         Args:
             param (dict): Parameter dictionary containing the "user_param"
                 item. param["user_param"] should be list of list contain [name,
-                value, unit, description]
+                value, unit, description].
         """
         if "user_param" in param:
             for user_param in param["user_param"]:
@@ -587,9 +587,9 @@ class Info():
             :meth:`split()`.
 
         Args:
-            depth (int): File split depth.
+            depth (int): File split depth number.
         """
-        self.add_param("split_depth", depth, "num", "File split depth")
+        self.add_param("split_depth", depth, "num", "File split depth number")
 
     def split_depth(self):
         """Return split depth of the result data.
@@ -603,7 +603,7 @@ class Info():
         :meth:`pandas.DataFrame.groupby`.
 
         Args:
-            depth (int): Data grouping depth.
+            depth (int): Data grouping depth number.
         """
 
         self.add_param("group_depth", depth, "num", "DataFrame groupby depth")

@@ -5,28 +5,29 @@ from ..tbl.table import Table
 
 
 class Index(Table):
-    """Create nested index table.
+    """Create nested index Table.
 
     This class can be used for the initial step of simulations.
 
     Args:
+        reqs[] (None): Input Data is not required.
         param["index_counts"] (list of int): Total counts of each column.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
         param["index_value"] (int, optional): Set a single value to the first
             index column if you want to fix it.
         param["type"] (str, optional): Parameter initiation type. If you do
             not use ``type``, you must set ``calc_cols`` as a list of column
             names.
 
-                * ``image`` : Add ``img_no`` index.
-                * ``trajectory`` : Add ``img_no`` and ``trj_no`` index.
-                * ``movie`` : Add ``img_no`` and ``frm_no`` index.
+                * "image" : Add ``img_no`` index.
+                * "trajectory" : Add ``img_no`` and ``trj_no`` index.
+                * "movie" : Add ``img_no`` and ``frm_no`` index.
 
         param["param"] (list of list, optional): Additional parameters.
             The list should be [[name, value, unit, description],...].
 
     Returns:
-        Table: Index table of iterated numbers
+        Table: Index Table of iterated numbers
 
     Examples:
         Create a nested trajectory index list.

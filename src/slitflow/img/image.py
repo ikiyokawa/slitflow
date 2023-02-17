@@ -7,7 +7,7 @@ from ..data import Data
 
 
 class Image(Data):
-    """Two-dimensional array Data class saved as tiff files.
+    """Stack of Two-dimensional image Data class saved as tiff files.
 
     Images are loaded upside down to facilitate picking up pixel value.
     See also :class:`~slitflow.data.Data` for properties and methods.
@@ -20,7 +20,7 @@ class Image(Data):
         super().__init__(info_path)
 
     def load_data(self, path):
-        """Load tiff file as :class:`np.ndarray`.
+        """Load tiff file as :class:`numpy.ndarray`.
         """
         stacks = []
         with tf.TiffFile(path, mode="r+b") as tif:
@@ -35,7 +35,7 @@ class Image(Data):
         return np.concatenate(stacks, axis=0)
 
     def save_data(self, stack, path):
-        """Save :class:`np.ndarray` data into tiff file.
+        """Save :class:`numpy.ndarray` data into tiff file.
         """
         with tf.TiffWriter(path) as tif:
             for i in np.arange(0, stack.shape[0]):
@@ -45,7 +45,7 @@ class Image(Data):
                           resolution=(1, 1))
 
     def split_data(self):
-        """Split image array according to info.index.
+        """Split image array according to :attr:`slitflow.info.Info.index`.
         """
         if len([x for x in self.data if x is not None]) == 0:
             return  # e.g. data.load.image.MovieFromFolder
@@ -100,7 +100,7 @@ def set_img_size(self):
 
 
 class RGB(Image):
-    """RGB color Image class which have three-dimensional array.
+    """Stack of RGB color image class saved as tiff files.
 
     uint8, uint16 color can be saved as color tiff stack.
     float32 color can be saved as hyperstack tiff.
@@ -111,7 +111,7 @@ class RGB(Image):
         super().__init__(info_path)
 
     def load_data(self, path):
-        """Load tiff file as :class:`np.ndarray`.
+        """Load tiff file as :class:`numpy.ndarray`.
         """
         stacks = []
         with tf.TiffFile(path, mode="r+b") as tif:
@@ -133,7 +133,7 @@ class RGB(Image):
         return np.concatenate(stacks, axis=0)
 
     def save_data(self, stack, path):
-        """Save :class:`np.ndarray` data into tiff file.
+        """Save :class:`numpy.ndarray` data into tiff file.
         """
         if "pitch" in self.info.get_param_names():
             pitch = 1 / self.info.get_param_value("pitch")
@@ -152,11 +152,11 @@ class RGB(Image):
                 tif.write(rgb,
                           photometric="rgb",
                           contiguous=True,
-                          description="Created by Dlitflow",
+                          description="Created by Slitflow",
                           resolution=(pitch, pitch))
 
     def set_index(self):
-        """How to get info.index.
+        """How to get :attr:`slitflow.info.Info.index`.
 
         Default function for RGB is :func:`set_color_index`.
 
@@ -165,10 +165,10 @@ class RGB(Image):
         set_color_index(self, 0, split_depth)
 
     def to_imshow(self, position):
-        """Convert image to use in :meth:`matplotlib.pyplot.imshow`.
+        """Convert image to use in :func:`matplotlib.pyplot.imshow`.
 
         Returns:
-            np.ndarray: Color image according to imshow format
+            numpy.ndarray: Color image according to imshow format
         """
         stack = np.concatenate(self.data, axis=0)
         img_r = stack[int(3 * position), :, :]
@@ -197,7 +197,7 @@ def set_color_index(Data, req_no, index_depth):
     Data.info.index = Data.reqs[req_no].info.index.copy()
     dfs = []
     df_color = pd.DataFrame({"color": np.array([1, 2, 3])})
-    if len(Data.info.index) == 0: #TODO: test
+    if len(Data.info.index) == 0:  # TODO: test
         Data.info.index = df_color
     else:
         for _, row in Data.info.index.iterrows():

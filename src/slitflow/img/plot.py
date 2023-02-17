@@ -5,28 +5,28 @@ from ..fun.misc import reduce_list as rl
 
 
 class Gauss2D(Image):
-    """Plot gaussian spots according to xy coordinates.
+    """Plot Gaussian spots according to X,Y-coordinate.
 
     .. caution::
 
         Trajectory data should be converted to localization data.
 
     Args:
-        reqs[0] (Table): Localization data including x,y coordinate columns.
-            Required param; "length_unit".
+        reqs[0] (Table): Localization data including X,Y-coordinate columns.
+            Required param; ``length_unit``.
         param["pitch"] (float): Length per pixel of reconstructed image.
-        param["sd"] (float): Standard deviation of gaussian spots.
+        param["sd"] (float): Standard deviation of Gaussian spots.
         param["img_size] (list of int): Image size as [width, height] pixels.
-        param["window_factor"] (float): S.D. of gaussian spots is multiplied by
-            this factor for the half pixel width of rendering clip of gaussian
-            spots. If you set a too small value, gaussian spots will be
+        param["window_factor"] (float): S.D. of Gaussian spots is multiplied by
+            this factor for the half pixel width of rendering clip of Gaussian
+            spots. If you set a too small value, Gaussian spots will be
             truncated square-shaped spots.
         param["group_depth"] (int): Plots grouping depth. The grouped
             coordinates by this depth will be plotted into the same frame.
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Image: Image class of reconstructed ``float32`` tif file
+        Image: Image class of reconstructed ``float32`` tiff file
     """
 
     def set_info(self, param={}):
@@ -40,7 +40,7 @@ class Gauss2D(Image):
             0, "intensity", "float32", "a.u.", "Pixel intensity")
         self.info.add_param(
             "calc_cols", ["x_" + length_unit, "y_" + length_unit],
-            "list of str", "xy coordinate columns")
+            "list of str", "X,Y-coordinate columns")
         self.info.add_param(
             "pitch", param["pitch"], length_unit + "/pix",
             "Length per pixel of reconstructed image")
@@ -48,7 +48,7 @@ class Gauss2D(Image):
             "img_size", param["img_size"], "pix",
             "Image size as [width, height] pixels")
         self.info.add_param(
-            "sd", param["sd"], length_unit, "Standard deviation of gauss plot")
+            "sd", param["sd"], length_unit, "Standard deviation of Gauss plot")
         self.info.add_param(
             "window_factor", param["window_factor"],
             "float", "Multiplying factor of plot S.D. for half window width")
@@ -56,19 +56,19 @@ class Gauss2D(Image):
 
     @ staticmethod
     def process(reqs, param):
-        """Plot gaussian spots according to xy coordinates.
+        """Plot Gaussian spots according to X,Y-coordinate.
 
         Args:
-            reqs[0] (pandas.DataFrame): Localization data including x,y
-                coordinate columns.
-            param["calc_cols"] (list of str): xy coordinate columns.
+            reqs[0] (pandas.DataFrame): Localization data including
+                X,Y-coordinate columns.
+            param["calc_cols"] (list of str): X,Y-coordinate columns.
             param["pitch"] (float): Length per pixel of reconstructed image.
-            param["sd"] (float): Standard deviation of gaussian spots.
+            param["sd"] (float): Standard deviation of Gaussian spots.
             param["img_size] (list of int): Image size as [width, height]
                 pixels.
-            param["window_factor"] (float): S.D. of gaussian spots is 
+            param["window_factor"] (float): S.D. of Gaussian spots is 
                 multiplied by this factor for the half pixel width of rendering
-                clip of gaussian spots. If you set a too small value, gaussian
+                clip of Gaussian spots. If you set a too small value, Gaussian
                 spots will be truncated square-shaped spots.
             param["index_cols"] (list of str): Column names of index.
 
@@ -114,17 +114,17 @@ class Gauss2D(Image):
 
 
 def gauss2d(x, y, xc, yc, s):
-    """Equation for plotting 2D gaussian image.
+    """Equation for plotting 2D Gaussian image.
 
     Args:
-        x (float): x-coordinate of grid position.
-        y (float): y-coordinate of grid position.
-        xc (float): x center of gaussian distribution.
-        yc (float): y center of gaussian distribution.
-        s (float): Standard deviation of gaussian distribution.
+        x (float): X-coordinate of grid position.
+        y (float): Y-coordinate of grid position.
+        xc (float): X center of Gaussian distribution.
+        yc (float): Y center of Gaussian distribution.
+        s (float): Standard deviation of Gaussian distribution.
 
     Returns:
-        float: Gaussian value of (x, y).
+        float: Gaussian value of (x, y)
     """
     return 1. / (2. * np.pi * s**2) * np.exp(-((x - xc)**2. + (y - yc)**2.) /
                                              (2. * s**2.))

@@ -24,7 +24,7 @@ class Pipeline():
 
     Attributes:
         root_dir (str): File path to the project directory.
-        df (DataFrame): Pipeline table consisting of a series of data
+        df (pandas.DataFrame): Pipeline table consisting of a series of data
             classes.
 
     """
@@ -90,15 +90,16 @@ class Pipeline():
         Args:
             class_name (str): Class name string.
             run_mode (int): Run mode (0=single data, single CPU; 1=single data
-                , multi CPU; 2=multi data, multi CPU; 3=multi data, multi CPU)
-            address (tuple): (group no, analysis no) of the task.
+                , multi CPU; 2=multi data, multi CPU; 3=multi data, multi CPU).
+            address (tuple): (group no, analysis no) to save the task.
             grp_name (str): Group name.
             ana_name (str): Analysis name.
             obs_names (list of str): List of observation names that are used
                 for data file names.
             reqs_address (list of tuple): List of (group no, analysis no) of
                 required data files.
-            reqs_split (list of int): List of split_depth for process.
+            reqs_split (list of int): List of ``split_depth`` to resplit
+                required data.
             param (dict): Parameter dictionary.
         """
         class_name = self.set_class_name(class_name)
@@ -123,7 +124,7 @@ class Pipeline():
 
         Returns:
             str: :func:`eval()` executable class_name string. "slitflow"
-            package should be imported as ``sf``.
+            package can be imported as "sf".
         """
         if isinstance(class_name, data.Data):
             class_name = info.fullname(class_name)
@@ -140,7 +141,7 @@ class Pipeline():
             raise Exception("class_name is invalid. (" + class_name + ")")
 
     def set_run_mode(self, run_mode):
-        """Convert to the run mode integer.
+        """Convert run mode to integer.
 
         Args:
             run_mode (int or str): Input to set the run mode.
@@ -225,7 +226,7 @@ class Pipeline():
 
         Args:
             reqs_address (list of tuple): List of (group_no, analysis_no) of
-            required data.
+                required data.
 
         Returns:
             list of tuple: List of required data address
@@ -272,15 +273,15 @@ class Pipeline():
         return obs_names
 
     def set_reqs_split(self, reqs_split, reqs_address):
-        """Check and convert required split depth.
+        """Check and convert split depth to resplit required data.
 
         Args:
-            reqs_split (list or str): List of split depth of required data.
+            reqs_split (list or str): List of ``split_depth`` of required data.
             reqs_address (list of tuple): List of required address to check
                 then number of required data.
 
         Returns:
-            list of int: List of split depth
+            list of int: List of ``split_depth`` of required data
         """
         if isinstance(reqs_split, str):
             reqs_split = eval(reqs_split)
@@ -388,11 +389,10 @@ class Pipeline():
         Args:
             indices (None or int or tuple or list): Task row indices to
 
-                * None: run all rows.
-                * int: run a row of selected directly.
-                * list: run rows of selected directly.
-                * tuple: run rows of selected by (start, end, step(optional)).
-                    tuple[1]==0 make select to the last row.
+                * None : run all rows.
+                * int : run a row of selected directly.
+                * list : run rows of selected directly.
+                * tuple : run rows of selected by (start, end, step(optional)). tuple[1]==0 make select to the last row.
 
         Returns:
             pandas.Int64Index: Task row indices to run
@@ -400,17 +400,19 @@ class Pipeline():
         Examples:
             When index of self.df is reset:
 
-            >>> self.convert_indices()
+            .. code-block:: python
+
+                >>> self.convert_indices()
                 self.df.index
-            >>> self.convert_indices(-1)
+                >>> self.convert_indices(-1)
                 pd.Index([self.df.index[-1]])
-            >>> self.convert_indices([1, -1])
+                >>> self.convert_indices([1, -1])
                 pd.Index([self.df.index[1], self.df.index[-1]])
-            >>> self.convert_indices(range(3))
+                >>> self.convert_indices(range(3))
                 self.df.index[:3]
-            >>> self.convert_indices((1, -1))
+                >>> self.convert_indices((1, -1))
                 self.df.index[1:-1]
-            >>> self.convert_indices((1, 0, 2))
+                >>> self.convert_indices((1, 0, 2))
                 self.df.index[1::2]
 
         """
@@ -440,7 +442,7 @@ class Pipeline():
         """Execute a task that is not split into multiple files.
 
         Args:
-            class_name (str): :func:`eval()` executable class_name string.
+            class_name (str): :func:`eval()` executable class name string.
             reqs_split (list): List of split depth of each required data.
             reqs_address (list of tuple): List of required data address.
             obs_name (list of str): Observation names.
@@ -543,7 +545,7 @@ class Pipeline():
             ana_name (str): Analysis name.
             run_mode (int): Run mode number. This should be 0 or 1.
             address (tuple): (group_no, analysis_no) of the result data.
-            param (dict): Parameter dictionary. param should have the
+            param (dict): Parameter dictionary. This should have the
                 below item.
             param["obs_name"] (str): Newly created observation name.
 
@@ -574,13 +576,12 @@ class Pipeline():
             reqs_address (list of tuple): List of (group name, analysis name)
                 to delete.
             obs_names (list of str): Observation names to delete.
-            param (dict, optional): Parameter dictionary. param should have the
+            param (dict, optional): Parameter dictionary. param would have the
                 below item.
             param["keep"] (str, optional): Defines delete type.
 
-                * ``info``: Not delete information files.
-                * ``folder``: Delete the information files but not the folder
-                    itself.
+                * "info" : Not delete information files.
+                * "folder" : Delete the information files but not the folder itself.
 
         """
         if "keep" not in param:
@@ -613,15 +614,16 @@ class Pipeline():
                  param):
         """Copy data from a different analysis.
 
-
         Args:
             address (tuple): (group_no, analysis_no) of copy destination.
             ana_name (str): Analysis name.
             grp_name (str): Group name.
-            reqs_address (list of tuple): List of data addresses to copy.
-                List should contain only one address.
-            obs_names (list of str): Observation names to copy. List should
-                contain only one observation name.
+            reqs_address (list of tuple): List containing only one data
+                address of copy source.
+            obs_names (list of str): List containing only one observation
+                name of copy destination.
+            param (dict): Parameter dictionary. This should have the
+                below item.
             param["obs_name"] (str): Observation name of copy source.
 
         """
@@ -674,11 +676,12 @@ class Pipeline():
         """Create workflow graph into the g0_config directory.
 
         Args:
-            fig_name: Name of the flowchart file.
-            label_type (str): Description type. This should be "class_desc" or
-                "grp_ana". "class_desc" shows the one-line crass description
-                from class docstring. "grp_ana" shows "grp_name (newline)
-                ana_name".
+            fig_name (str): Name of the flowchart file.
+            label_type (str): Description type. This should be
+
+                * "class_desc" : shows the one-line class description from class docstring.
+                * "grp_ana" : shows "grp_name (newline) ana_name".
+
             is_vertical (bool): Flowchart direction. Defaults to False
                 (horizontal).
             scale (tuple of int): Scale factors of (width, height).
@@ -751,7 +754,7 @@ class Pipeline():
                     [row.class_name, row.description])
             else:
                 raise Exception(
-                    'label_type should be "grp_ana" or "class_desc"')
+                    'label_type should be "grp_ana" or "class_desc".')
             reqs = row.reqs_address
             if len(reqs) == 0:
                 continue

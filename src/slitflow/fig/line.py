@@ -12,6 +12,7 @@ class Simple(Figure):
         param["calc_cols"] (list of str): Column names for X and Y axes.
         param["err_col"] (str, optional): Column name for error bar.
         param["cap_size"] (float, optional): Cap size of error bar.
+            Required if "err_col" in param. Defaults to 2.
         param["group_depth"] (int): Data split depth number. This depth splits
             data for plotting. The split data is plotted as different lines.
             For example, if you want to plot each trajectory from a table
@@ -51,7 +52,8 @@ class Simple(Figure):
             param["calc_cols"] (list of str): Column names for X and Y axes.
             param["err_col"] (str, optional): Column name for error bar.
             param["cap_size"] (float, optional): Cap size of error bar.
-            param["index_cols"] (list of str, optional): Column names of index.
+                Required if "err_col" in param.
+            param["index_cols"] (list of str): Column names of index.
                 These column names are used for
                 :meth:`pandas.DataFrame.groupby`.
 
@@ -93,6 +95,7 @@ class WithModel(Figure):
         param["model_cols"] (list of str): Column names for X and Y axes of
             model curves.
         param["cap_size"] (float, optional): Cap size of error bar.
+            Required if "err_col" in param. Defaults to 2.
         param["group_depth"] (int): Data split depth number.
         param["group_depth_model"] (int): Depth number to split model data.
         param["split_depth"] (int): File split depth number.
@@ -134,10 +137,11 @@ class WithModel(Figure):
             param["err_col"] (str, optional): Column name for error bar.
             param["model_cols"] (list of str): Column names for X and Y axes of
                 model curves.
-            param["index_cols"] (list of str, optional): Column names of index.
+            param["index_cols"] (list of str): Column names of index.
                 This column is used for :meth:`pandas.DataFrame.groupby`.
             param["cap_size"] (float, optional): Cap size of error bar.
-            param["index_cols_model"] (list of str, optional): Column names of
+                Required if "err_col" in param.
+            param["index_cols_model"] (list of str): Column names of
                 index. This column is used for :meth:`pandas.DataFrame.groupby`
                 of model.
 

@@ -18,7 +18,7 @@ class LocalMax2Xy(Table):
     Args:
         reqs[0] (LocalMax): Local max images to pick up coordinates. Required
             params; ``length_unit``, ``pitch``.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: X,Y-coordinate of local max pixels
@@ -81,13 +81,13 @@ class LocalMax2XyWithDoG(Table):
     Args:
         reqs[0] (Image): Image to apply the filter to. Required parameters;
             ``length_unit``, ``pitch``.
-        param["wavelength"] (int): Emission wavelength in ``length_unit``.
+        param["wavelength"] (int): Emission wavelength in length_unit.
         param["NA"] (float): Numerical aperture.
         param["size_factor"] (float, optional): Particle size factor to
             multiply PSF size. Defaults to 1.
         param["mask_factor"] (float, optional): Mask size factor to multiply
             PSF diameter. Defaults to 1.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: X,Y-coordinate of detected local max

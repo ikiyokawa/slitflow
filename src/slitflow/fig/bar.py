@@ -10,15 +10,15 @@ class Simple(Figure):
     Args:
         reqs[0] (Table): Table containing X and Y axes to create figure.
         param["calc_cols"] (list of str): Column names for X and Y axes.
-        param["bar_widths"] (float or list of float): Width of each bar.
-            Defaults to 0.8.
+        param["bar_widths"] (float or list of float, optional): Width of
+            each bar. Defaults to 0.8.
         param["err_col"] (str, optional): Column name for error bar.
         param["cap_size"] (float, optional): Cap size of error bar.
         param["group_depth"] (int): Data split depth number.
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Figure: Line Figure object
+        Figure: Bar Figure object
     """
 
     def set_info(self, param={}):
@@ -45,7 +45,7 @@ class Simple(Figure):
 
     @staticmethod
     def process(reqs, param):
-        """Line graph with or without error bar.
+        """Bar graph with or without error bar.
 
         Args:
             reqs[0] (pandas.DataFrame): Table containing X and Y axes to create
@@ -53,13 +53,13 @@ class Simple(Figure):
             param["calc_cols"] (list of str): Column names for X and Y axes.
             param["bar_widths"] (float or list of float): Width of each bar.
             param["err_col"] (str, optional): Column name for error bar.
-            param["cap_size"] (float, optional): Cap size of error bar.
-            param["index_cols"] (list of str, optional): Column names of index.
+            param["cap_size"] (float): Cap size of error bar.
+            param["index_cols"] (list of str): Column names of index.
                 These column names are used for
                 :meth:`pandas.DataFrame.groupby`.
 
         Returns:
-            matplotlib.figure.Figure:  matplotlib Figure containing line plot
+            matplotlib.figure.Figure:  matplotlib Figure containing bar plot
         """
         df = reqs[0].copy()
         fig, ax = plt.subplots()
@@ -90,7 +90,7 @@ class Simple(Figure):
 
 
 class WithModel(Figure):
-    """Bar with model curves.
+    """Bar graph with or without error bar and with model curves.
 
     Args:
         reqs[0] (Table): Table containing X and Y axes of raw data.
@@ -100,6 +100,7 @@ class WithModel(Figure):
         param["model_cols"] (list of str): Column names for X and Y axes of
             model curves.
         param["cap_size"] (float, optional): Cap size of error bar.
+            Required if "err_col" in param. Defaults to 2.
         param["group_depth"] (int): Data split depth number.
         param["group_depth_model"] (int): Depth number to split model data.
         param["split_depth"] (int): File split depth number.
@@ -132,7 +133,7 @@ class WithModel(Figure):
 
     @staticmethod
     def process(reqs, param):
-        """Bar with model curves.
+        """Bar graph with or without error bar and with model curves.
 
         Args:
             reqs[0] (pandas.DataFrame): Table containing X and Y axes to create
@@ -141,10 +142,11 @@ class WithModel(Figure):
             param["err_col"] (str, optional): Column name for error bar.
             param["model_cols"] (list of str): Column names for X and Y axes of
                 model curves.
-            param["index_cols"] (list of str, optional): Column names of index.
+            param["index_cols"] (list of str): Column names of index.
                 This column is used for :meth:`pandas.DataFrame.groupby`.
             param["cap_size"] (float, optional): Cap size of error bar.
-            param["index_cols_model"] (list of str, optional): Column names of
+                Required if "err_col" in param.
+            param["index_cols_model"] (list of str): Column names of
                 index. This column is used for :meth:`pandas.DataFrame.groupby`
                 of model.
 

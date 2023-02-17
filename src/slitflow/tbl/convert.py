@@ -11,12 +11,13 @@ class SortCols(Table):
 
     Args:
         reqs[0] (Table): Table for sorting.
-        param["new_depths"] (list of int): Target depths of indexes. If list
-            length < total columns, remaining columns are assumed as depth=0.
+        param["new_depths"] (list of int): Target depth number of indexes.
+            If list length < total columns, remaining columns are assumed
+            as depth=0.
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Table: Sorted table
+        Table: Sorted Table
     """
 
     def set_info(self, param={}):
@@ -33,12 +34,16 @@ class SortCols(Table):
 
     @staticmethod
     def process(reqs, param):
-        """
+        """Change column depths and sort values.
+
+        If you want to change from ["img_no", "trj_no", "frm_no"] to
+        ["frm_no", "img_no", "trj_no"], set new_depths = [2,3,1].
+
         Args:
             reqs[0] (pandas.DataFrame): Table for sorting.
-            param["new_depths"] (list of int): Target depths of indexes. If
-                list length < total columns, remaining columns are assumed as
-                depth=0.
+            param["new_depths"] (list of int): Target depth number of indexes.
+                If list length < total columns, remaining columns are assumed
+                as depth=0.
 
         Returns:
             pandas.DataFrame: Sorted table
@@ -64,7 +69,7 @@ class SortCols(Table):
 
 
 class AddColumn(Table):
-    """Add a new column with values .
+    """Add a new column with values.
 
     .. caution::
 
@@ -78,7 +83,7 @@ class AddColumn(Table):
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Table: Column-added table
+        Table: Column-added Table
     """
 
     def set_info(self, param={}):
@@ -94,7 +99,8 @@ class AddColumn(Table):
 
     @staticmethod
     def process(reqs, param):
-        """
+        """Add a new column with values.
+
         Args:
             reqs[0] (pandas.DataFrame): Table to add column.
             param["col_values"] (array-like): Value list of new column.
@@ -109,7 +115,7 @@ class AddColumn(Table):
 
 
 class Obs2Depth(Table):
-    """Merge tables from different Observations into a top level depth.
+    """Merge tables from different observations into a top level depth.
 
     .. caution::
 
@@ -117,7 +123,7 @@ class Obs2Depth(Table):
         method or creating a Data object does not work appropriately.
 
     Observation names for merging should be listed into obs_name argument
-    of :meth:`slitflow.manager.Pipeline.add` in Pipeline class.
+    of :meth:`~slitflow.manager.Pipeline.add` in Pipeline class.
 
     Args:
         reqs (list of Table): Tables to merge.
@@ -129,7 +135,7 @@ class Obs2Depth(Table):
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Table: Merged table
+        Table: Merged Table
     """
 
     def set_info(self, param={}):
@@ -155,7 +161,7 @@ class Obs2Depth(Table):
 
     @staticmethod
     def process(reqs, param):
-        """Merge different Observations into a top level depth.
+        """Merge different Observations into the top level depth.
 
         Args:
             reqs (list of pandas.DataFrame): Tables from different

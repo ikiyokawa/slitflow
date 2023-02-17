@@ -105,7 +105,7 @@ class BinaryImage(Table):
 
     Args:
         reqs[0] (Table): Table including X,Y-coordinate. Required param; 
-            ``pitch`` and ``length_unit``.
+            ``pitch``, ``length_unit``.
         reqs[1] (Image): Mask image to select table.
         param["split_depth"] (int): File split depth number.
 

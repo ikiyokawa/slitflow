@@ -18,12 +18,12 @@ class Table(Data):
         super().__init__(info_path)
 
     def load_data(self, path):
-        """Load csv file as :class:`pandas.DataFrame`.
+        """Load CSV file as :class:`pandas.DataFrame`.
         """
         return pd.read_csv(path, dtype=self.info.get_column_type())
 
     def save_data(self, df, path):
-        """Save :class:`pandas.DataFrame` data into csv file.
+        """Save :class:`pandas.DataFrame` data into CSV file.
         """
         df = df.set_axis(self.info.get_column_name("all"), axis=1)
         df.to_csv(path, index=False)

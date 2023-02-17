@@ -7,10 +7,10 @@ from ..fun.misc import reduce_list as rl
 
 
 class Simple(Figure):
-    """Scatter plot of columns from a table.
+    """Scatter plot of columns from a Table.
 
     Args:
-        reqs[0] (Table): Table containing X and Y axes to create figure.
+        reqs[0] (Table): Table containing X and Y axes to create Figure.
         param["calc_cols"] (list of str): Column names for X and Y axes.
         param["marker_styles"] (str or list of str): Marker style of each
             group. Defaults to "o".
@@ -18,7 +18,7 @@ class Simple(Figure):
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Figure: matplotlib figure objects.
+        Figure: matplotlib Figure object
     """
 
     def set_info(self, param={}):
@@ -42,14 +42,14 @@ class Simple(Figure):
             reqs[0] (pandas.DataFrame): Table containing X and Y axes to create
                 figure.
             param["calc_cols"] (list of str): Column names for X and Y axes.
-            param["marker_styles"] (list of str): Marker style of each group.
-                Defaults to "o".
-            param["index_cols"] (list of str, optional): Column names of index.
+            param["marker_styles"] (str or list of str): Marker style of each
+                group. Defaults to "o".
+            param["index_cols"] (list of str): Column names of index.
                 These column names are used for
                 :meth:`pandas.DataFrame.groupby`.
 
         Returns:
-            matplotlib.figure.Figure:  matplotlib Figure containing line plot
+            matplotlib.figure.Figure: matplotlib Figure containing scatter plot
         """
         df = reqs[0].copy()
         fig, ax = plt.subplots()

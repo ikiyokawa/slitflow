@@ -26,7 +26,7 @@ class CutOffPixelQuantile(Table):
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Table: Selected table
+        Table: Selected Table
     """
 
     def set_info(self, param={}):

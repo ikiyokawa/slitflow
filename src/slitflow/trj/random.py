@@ -18,12 +18,12 @@ class Walk2DCenter(Table):
         reqs[0] (Index): Index Table class.
         param["length_unit"] (str): String of length unit such as "um",
             "nm", "pix". This string is used as column name footers and units.
-        param["diff_coeff"] (float): Diffusion coefficient in unit_length^2/s.
+        param["diff_coeff"] (float): Diffusion coefficient in length_unit^2/s.
         param["interval"] (int): Time interval in second.
         param["n_step"] (int): Step number of trajectory. e.g. n_step=3 
             contains four points.
         param["seed"] (int, optional): Random seed.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Expanded Table including frame number and coordinates
@@ -130,14 +130,14 @@ class WalkRect(Table):
         param["dimension"] (int): Position dimension. 1=x, 2=xy, 3 = xyz.
         param["length_unit"] (str): String of length unit such as "um",
             "nm", "pix". This string is used as column name footers and units.
-        param["diff_coeff"] (float): Diffusion coefficient in unit_length^2/s.
+        param["diff_coeff"] (float): Diffusion coefficient in length_unit^2/s.
         param["interval"] (int): Time interval in second.
         param["n_step"] (int): Step number of trajectory. n_step=3 contains
             four points.
         param["lims"] (list of list of float): List of [lower, upper]
             localization limits for each dimension.
         param["seed"] (int, optional): Random seed.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Expanded Table including frame number and coordinates
@@ -215,8 +215,8 @@ class WalkRect(Table):
                 localization limits for each dimension.
 
         Returns:
-            pandas.DataFrame: Expanded table including frame number and 
-                coordinates
+            pandas.DataFrame: Expanded table including frame number and
+            coordinates
         """
         dfs_req = reqs[0].copy()
         df_list = []
@@ -274,7 +274,7 @@ class WalkCircle(Table):
         param["dimension"] (int): Position dimension. 1=x, 2=xy, 3 = xyz.
         param["length_unit"] (str): String of length unit such as "um",
             "nm", "pix". This string is used as column name footers and units.
-        param["diff_coeff"] (float): Diffusion coefficient in unit_length^2/s.
+        param["diff_coeff"] (float): Diffusion coefficient in length_unit^2/s.
         param["interval"] (int): Time interval in second.
         param["n_step"] (int): Step number of trajectory. n_step=3 contains
             four points.
@@ -282,7 +282,7 @@ class WalkCircle(Table):
         param["offset"] (list of float, optional): [x, y, (z)] position of the
             circle center. Defaults to [0, 0].
         param["seed"] (int, optional): Random seed.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Expanded Table including frame number and coordinates
@@ -340,7 +340,7 @@ class WalkCircle(Table):
 
         Returns:
             pandas.DataFrame: Expanded table including frame number and 
-                coordinates
+            coordinates
         """
         dfs_req = reqs[0].copy()
         n_dim = len(param["calc_cols"])

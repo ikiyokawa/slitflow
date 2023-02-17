@@ -23,7 +23,7 @@ We usually import slitflow as follows:
 
 Simulate random walks
 ------------------------
-Start by creating an index object that defines the number of images and 
+Start by creating an Index object that defines the number of images and 
 trajectories. Then we execute the ``run()`` method to make result data inside
 the Index object.
 
@@ -119,7 +119,7 @@ See also :class:`slitflow.fig.line.Simple`, :class:`slitflow.fig.style.Basic` an
 
 Run using pipeline
 -----------------------------
-The pipeline class can perform all the above steps while saving data to a
+The Pipeline class can perform all the above steps while saving data to a
 project folder.
 
 

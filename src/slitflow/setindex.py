@@ -24,7 +24,7 @@ def from_data(Data):
     """Get index from result pandas.DataFrame data.
 
     This function can only be used for
-    :class:`slitflow.tbl.table.Table` objects.
+    :class:`~slitflow.tbl.table.Table` objects.
 
     Args:
         Data (Table): Table data containing result :class:`pandas.DataFrame`.
@@ -39,7 +39,7 @@ def from_req_plus_data(Data, req_no):
     """Copy index from required data index and result pandas.DataFrame.
 
     This function can only be used for 
-    :class:`slitflow.tbl.Table` objects. This function is not
+    :class:`~slitflow.tbl.table.Table` objects. This function is not
     used in general classes.
 
     Args:

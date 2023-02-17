@@ -6,7 +6,7 @@ from ..fun.misc import reduce_list as rl
 
 
 class Gray(Figure):
-    """Create pseudo color map from a gray scale image array.
+    """Create pseudo color map from a gray scale Image object.
 
         .. caution::
 
@@ -15,14 +15,14 @@ class Gray(Figure):
             height, width).
 
     Args:
-        reqs[0] (Image): Image to create image figure. Required params;
+        reqs[0] (Image): Image to create image Figure. Required params;
             ``img_size``, ``pitch``.
-        param["lut_limits"] (list of float): The lower and upper limit of LUT.
-        param["cmap"] (str, optional): The color map name for matplotlib
-            imshow. Defaults to "viridis".
+        param["lut_limits"] (list of float): Lower and upper limit of LUT.
+        param["cmap"] (str, optional): Color map name for
+                :func:`matplotlib.pyplot.imshow`. Defaults to "viridis".
 
     Returns:
-        Figure: matplotlib figure objects.
+        Figure: matplotlib Figure object
     """
 
     def set_info(self, param={}):
@@ -42,17 +42,18 @@ class Gray(Figure):
 
     @staticmethod
     def process(reqs, param):
-        """Scatter plot of columns from a table.
+        """Create pseudo color map from a gray scale image array.
 
         Args:
             reqs[0] (numpy.ndarray): Image to create image figure.
-            param["lut_limits"] (list of float): The lower and upper limit of
+            param["lut_limits"] (list of float): Lower and upper limit of
                 LUT.
-            param["cmap"] (str, optional): The color map name for matplotlib
-                imshow.
+            param["cmap"] (str): Color map name for
+                :func:`matplotlib.pyplot.imshow`.
 
         Returns:
-            matplotlib.figure.Figure:  matplotlib Figure containing line plot
+            matplotlib.figure.Figure:  matplotlib Figure containing
+            pseudo color image
         """
         img = reqs[0].copy()[0, :, :]
         low = param["lut_limits"][0]

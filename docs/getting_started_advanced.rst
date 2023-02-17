@@ -36,7 +36,8 @@ forked repository.
 
 Download movies
 ------------------------
-You can download image data of single-molecule movies from `zenodo <xxx>`_ 
+You can download image data of single-molecule movies from `zenodo
+<https://zenodo.org/record/7645485#.Y-3tqB_P2Ht>`_ 
 as a zip file (142 MB). Please unzip the file outside of the project
 directory. In this tutorial, we will assume that the data are unzipped in
 the ``slitflow/data`` directory in the user home directory.

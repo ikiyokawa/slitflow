@@ -17,14 +17,14 @@ class UniformRect(Table):
         param["n_point"] (int): Number of points in one frame.
         param["lims"] (list of list of float): List of [lower, upper] limit for
             each dimension in length_unit.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
         param["length_unit"] (str): Unit string for column names such as "um",
             "nm".
         param["dimension"] (int): Position dimension 1=x, 2=xy, 3=xyz.
         param["seed"] (int, optional): Random seed.
 
     Returns:
-        Table: Expanded Table including point number and coordinates.
+        Table: Expanded Table including point number and coordinates
     """
 
     def set_info(self, param):
@@ -67,7 +67,7 @@ class UniformRect(Table):
             param["calc_cols"] (list of str): Column name of each coordinate.
 
         Returns:
-            pandas.DataFrame: Expanded table including point no, coordinates
+            pandas.DataFrame: Expanded table including point no and coordinates
         """
         df_req = reqs[0].copy()
         df_list = []

@@ -208,7 +208,7 @@ def to_fastspt_cell(df, param):
 
 
 def to_hist_df(HistVecJumps, JumpProb, HistVecJumpsCDF, JumpProbCDF):
-    """Convert fastspt compatible list to pandas.DataFrame.
+    """Convert fastspt compatible list to :class:`pandas.DataFrame`.
 
     Args:
         HistVecJumps (numpy.ndarray): Jump histograms vector.
@@ -258,10 +258,10 @@ class FitJumpLenDist2comp(Table):
             bound] of the LocError value for fitting.
         param["iterations"] (int): Fitting iteration number.
         param["dZ"] (int): Axial illumination slice length.
-        param["useZcorr"]: (bool): Whether to use Z correction.
+        param["useZcorr"] (bool): Whether to use Z correction.
         param["a"] (float, optional): Zcorr constant a if Zcorr is used.
         param["b"] (float, optional): Zcorr constant b if Zcorr is used.
-        param["init"]: (list of float, optional): Initial values of fit
+        param["init"] (list of float, optional): Initial values of fit
             parameters for [D_free, D_bound, F_bound, sigma(optional)].
         param["split_depth"] (int): File split depth number.
 
@@ -336,9 +336,11 @@ class FitJumpLenDist2comp(Table):
                 upper bound] of the LocError value for fitting.
             param["iterations"] (int): Fitting iteration number.
             param["dZ"] (int): Axial illumination slice length.
-            param["useZcorr"]: (bool): Whether to use Z correction.
+            param["useZcorr"] (bool): Whether to use Z correction.
             param["a"] (float, optional): Zcorr constant a if Zcorr is used.
             param["b"] (float, optional): Zcorr constant b if Zcorr is used.
+            param["init"] (list of float, optional): Initial values of fit
+                parameters for [D_free, D_bound, F_bound, sigma(optional)].
             param["CDF"] (bool): Whether to use CDF.
 
         Returns:
@@ -419,10 +421,10 @@ class FitJumpLenDist3comp(Table):
             bound] of the LocError value for fitting.
         param["iterations"] (int): Fitting iteration number.
         param["dZ"] (int): Axial illumination slice length.
-        param["useZcorr"]: (bool): Whether to use Z correction.
+        param["useZcorr"] (bool): Whether to use Z correction.
         param["a"] (float, optional): Zcorr constant a if Zcorr is used.
         param["b"] (float, optional): Zcorr constant b if Zcorr is used.
-        param["init"]: (list of float, optional): Initial values of fit
+        param["init"] (list of float, optional): Initial values of fit
             parameters for [D_fast, D_med, D_bound, F_bound, sigma(optional)].
         param["split_depth"] (int): File split depth number.
 
@@ -514,11 +516,11 @@ class FitJumpLenDist3comp(Table):
                 upper bound] of the LocError value for fitting.
             param["iterations"] (int): Fitting iteration number.
             param["dZ"] (int): Axial illumination slice length.
-            param["useZcorr"]: (bool): Whether to use Z correction or not.
+            param["useZcorr"] (bool): Whether to use Z correction or not.
             param["a"] (float, optional): Zcorr constant a if Zcorr is used.
             param["b"] (float, optional): Zcorr constant b if Zcorr is used.
             param["CDF"] (bool): Whether to use CDF.
-            param["init"]: (list of float, optional): Initial values of fit
+            param["init"] (list of float, optional): Initial values of fit
                 parameters for [D_fast, D_med, D_bound, F_bound,
                 sigma(optional)].
 
@@ -584,7 +586,7 @@ class FitJumpLenDist3comp(Table):
 
 
 def from_hist_df(df):
-    """Convert pandas.DataFrame to jump length distribution.
+    """Convert :class:`pandas.DataFrame` to jump length distribution.
 
     Args:
         df (pandas.DataFrame): Table of jump length distribution.
@@ -659,7 +661,7 @@ class ModelJumpLenDist(Table):
             param["show_pdf"] (bool) : Whether to use the PDF model.
             param["CDF"] (bool): Whether to use CDF.
             param["dZ"] (int): Axial illumination slice length.
-            param["useZcorr"]: (bool): Whether to use Z correction.
+            param["useZcorr"] (bool): Whether to use Z correction.
             param["a"] (float, optional): Zcorr constant a if Zcorr is used.
             param["b"] (float, optional): Zcorr constant b if Zcorr is used.
             param["interval"] (float): Time interval.
@@ -709,7 +711,8 @@ class ModelJumpLenDist(Table):
 
 
 def to_model_hist_df(HistVec, y):
-    """Convert jump length distribution histogram model to pandas.DataFrame.
+    """Convert jump length distribution histogram model to
+    :class:`pandas.DataFrame`.
 
     Args:
         HistVec (numpy.ndarray): X-axis of jump length distribution.

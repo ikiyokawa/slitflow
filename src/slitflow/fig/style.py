@@ -25,8 +25,8 @@ class Basic(Figure):
         reqs[0] (Figure): Figure class object.
         param["size"] (list of float, optional): [width, height] of figure
             image (cm). Defaults to [4.5, 4.5].
-        param["margin"] (list, optional): [left, bottom, right, top] of
-            figure margin (cm). Defaults to [0.9, 0.6, 0.1, 0.4].
+        param["margin"] (list of float, optional): [left, bottom, right, top]
+            of figure margin (cm). Defaults to [0.9, 0.6, 0.1, 0.4].
         param["limit"] (list of float, optional): [x_lower, x_upper,
             y_lower, y_upper] limits of figure. If x_lower = None, skip
             X limits.
@@ -38,11 +38,11 @@ class Basic(Figure):
         param["format"] (list of str, optional): Strings for X and tick
             formats, e.g. ["%.0f","%.1f"].
         param["is_box"] (bool, optional): Draw box lined axis, if True.
-        param["line_widths"] (list of float, optional): Line width.
+        param["line_widths"] (float or list of float, optional): Line width.
             Defaults to 1.
-        param["line_styles"] (list of str, optional): Line style.
+        param["line_styles"] (str or list of str, optional): Line style.
         param["line_colors"] (list of RGB 0-255, optional): Line color. e.g.,
-            [[0, 0, 255]] is blue.
+            [[0, 0, 255]] is blue. Palette name is also available.
         param["error_thicknesses"] (list of float, optional): Error bar line
             width. Defaults to 1.
         param["error_line_styles"] (list of str, optional): Error bar line
@@ -51,10 +51,11 @@ class Basic(Figure):
             cap line width.
         param["marker_colors"] (list of list of RGB 0-255, optional): Marker
             edge and face colors. e.g., [[[0,0,0]],[[100,100,100]]].
-        param["marker_width"] (float, optional): Marker width.
-        param["marker_size"] (float, optional): Marker size.
+            List of palette_name is also available.
+        param["marker_widths"] (float or list of float, optional): Marker widths.
+        param["marker_sizes"] (float or list of float, optional): Marker sizes.
         param["bar_widths"] (float or list of float): Width of each bar.
-        param["label"] (str, optional): [X label string, Y label string] for
+        param["label"] (list of str, optional): [X label string, Y label string] for
             axes label texts.
         param["legend"] (list, optional): [list of label strings, handle
             indexes of artists to create a legend, keyword arguments for
@@ -63,7 +64,7 @@ class Basic(Figure):
             create legend for all artists. If only handle indexes are
             specified, e.g. [None, [0,1]], then create legend for selected
             artists with existing labels. Keyword arguments should be
-            dictionary, e.g. {"loc": "center}.
+            dictionary, e.g. {"loc": "center"}.
         param["log_scale"](list of bool): Change axes to the log scale. e.g.,
             [False, True] means that the only y-axis is the log scale.
         param["title"] (str, optional): String for the figure title.
@@ -73,12 +74,12 @@ class Basic(Figure):
             `matplotlib.colormaps <https://matplotlib.org/stable/tutorials/colors/colormaps.html>`_.
 
     Returns:
-        Figure: Styled figure object
+        Figure: Styled Figure object
     """
 
     def save_data(self, data, path):
         """
-        :meth:`matplotlib.pyplot.clf` is removed to avoid deleting the final
+        :func:`matplotlib.pyplot.clf` is removed to avoid deleting the final
         :class:`matplotlib.figure.Figure` object.
         """
         super(Figure, self).save_data(data, path)
@@ -103,7 +104,7 @@ class Basic(Figure):
         if "limit" in param:
             self.info.add_param(
                 "limit", param["limit"], "list of float",
-                "[x_lower, x_upper, y_lower, y_upper] limit of figure")
+                "[x_lower, x_upper, y_lower, y_upper] limits of figure")
         if "tick" in param:
             x_tick = param["tick"][0]
             if type(x_tick).__module__ == np.__name__:
@@ -131,8 +132,8 @@ class Basic(Figure):
         if "line_widths" not in param:
             param["line_widths"] = 1
         self.info.add_param(
-            "line_widths", param["line_widths"], "list of float",
-            "Line width")
+            "line_widths", param["line_widths"], "float or list of float",
+            "Line widths")
         if "line_styles" in param:
             self.info.add_param(
                 "line_styles", param["line_styles"], "list of str",
@@ -140,17 +141,17 @@ class Basic(Figure):
         if "line_colors" in param:
             self.info.add_param(
                 "line_colors", param["line_colors"], "list of RGB 0-255",
-                "Line color")
+                "Line colors")
         if "bar_widths" in param:
             self.info.add_param(
-                "bar_widths", param["bar_widths"], "float or list",
+                "bar_widths", param["bar_widths"], "float or list of float",
                 "Width of each bar")
 
         if "error_thicknesses" not in param:
             param["error_thicknesses"] = 1
         self.info.add_param(
             "error_thicknesses", param["error_thicknesses"], "list of float",
-            "Error bar line width")
+            "Error bar line widths")
         if "error_line_styles" in param:
             self.info.add_param(
                 "error_line_styles", param["error_line_styles"], "list of str",
@@ -158,11 +159,11 @@ class Basic(Figure):
         if "error_colors" in param:
             self.info.add_param(
                 "error_colors", param["error_colors"],
-                "list of RGB 0-255", "Error bar range line color")
+                "list of RGB 0-255", "Error bar range line colors")
         if "error_cap_sizes" in param:
             self.info.add_param(
                 "error_cap_sizes", param["error_cap_sizes"],
-                "list of float", "Error bar cap size")
+                "list of float", "Error bar cap sizes")
 
         if "marker_styles" in param:
             self.info.add_param(
@@ -206,11 +207,11 @@ class Basic(Figure):
         """Basic figure style for A4 paper size.
 
         Args:
-            reqs[0](matplotlib.figure.Figure): Figure class object.
+            reqs[0](matplotlib.figure.Figure): Figure object.
             param (dict): See class args description.
 
         Returns:
-            matplotlib.figure.Figure: Styled figure object
+            matplotlib.figure.Figure: Styled Figure object
         """
         fig = reqs[0]
         fig = set_format(fig)
@@ -284,12 +285,12 @@ class ParamTable(Basic):
     Args:
         reqs[0] (Figure): Figure class object.
         reqs[1] (Table): Parameter table object. For required columns, please
-            see :class:`fig.Basic`.
-        param (dict): Parameters for :class:`fig.Basic` is available to set
+            see :class:`Basic`.
+        param (dict): Parameters for :class:`Basic` is available to set
             common style for all figures.
 
     Returns:
-        Figure: Styled figure object
+        Figure: Styled Figure object
     """
 
     def set_reqs(self, reqs=None, param=None):
@@ -302,11 +303,11 @@ class ParamTable(Basic):
         """Basic figure style for A4 paper size.
 
         Args:
-            reqs[0](matplotlib.figure.Figure): Figure class object.
-            param (dict): See class args description of :class:`fig.Basic`.
+            reqs[0](matplotlib.figure.Figure): Figure object.
+            param (dict): See class args description of :class:`Basic`.
 
         Returns:
-            matplotlib.figure.Figure: Styled figure object
+            matplotlib.figure.Figure: Styled Figure object
         """
         fig = Basic.process(reqs, param)
         df = reqs[1].copy()
@@ -409,7 +410,7 @@ class ColorBar(Figure):
         param["format"] (str, optional): Tick value format string. e.g. "%.0f".
 
     Returns:
-        Figure: Styled colorbar figure object
+        Figure: Styled colorbar Figure object
     """
 
     def set_info(self, param={}):
@@ -456,7 +457,7 @@ class ColorBar(Figure):
             param (dict): See the class args description.
 
         Returns:
-            matplotlib.figure.Figure: Styled figure object
+            matplotlib.figure.Figure: Styled Figure object
         """
         fig = reqs[0]
         ax = fig.axes[0]
@@ -557,17 +558,17 @@ def set_legend(fig, labels=None, handle_indexes=None, kwargs={}, axes_no=0):
     """Set figure legend.
 
     Args:
-        fig (matplotlib.figure): The figure object of matplotlib.
-        labels (list of string): List of label strings for each artists such as
+        fig (matplotlib.figure.Figure): Figure object.
+        labels (list of str): List of label strings for each artists such as
             Line2D.
         handle_indexes (list of int): Index number list of artists to be
             included to the legend.
-        kwargs (dict): Keyword arguments for :meth:`matplotlib.pyplot.legend`.
+        kwargs (dict): Keyword arguments for :func:`matplotlib.pyplot.legend`.
 
     Returns:
-        matplotlib.figure: figure object with legend
+        matplotlib.figure.Figure: Figure object with legend
 
-    ..caution::
+    .. caution::
 
         All artists to be candidates for the legend should have labels during
         their creation.
@@ -761,9 +762,9 @@ def set_linecolor(fig, line_colors, axes_no=0):
 def set_markerstyle(fig, marker_styles, axes_no=0):
     """Change line styles in bulk or individually.
 
-    ..caution::
+    .. caution::
 
-        scatter plots can not change marker style
+        Scatter plots can not change marker style.
 
     """
     gen = MarkerStyleLoop(marker_styles)
@@ -1054,7 +1055,7 @@ def is_log_scale(fig, bools, axes_no=0):
 
     Args:
         fig (matplotlib.figure.Figure): Figure object.
-        bools (list or bool):  Change axes to the log scale. e.g.,
+        bools (list of bool):  Change axes to the log scale. e.g.,
             [False, True] means that the only y-axis is the log scale.
 
     Returns:

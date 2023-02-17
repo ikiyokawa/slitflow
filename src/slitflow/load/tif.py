@@ -20,12 +20,12 @@ class SingleFile(Image):
             Defaults to [[1, "img_no","Image number"]].
         param["img_nums"] (list of int, optional): Set if image numbers are not
             [1,2,3,...,total_images].
-        param["value_type"] (str): Value type of each pixel. uint8, uint16 or
-            float32.
+        param["value_type"] (str): Value type of each pixel. "uint8", "uint16"
+            or "float32".
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Image: Tiff image class
+        Image: Tiff Image class
 
     Examples:
         Import a tiff stack as an observation file.
@@ -110,7 +110,7 @@ class SplitFile(Image):
     Argument names are defined assuming the observation image data that have
     several tiff stacks(img_no=1, 2, ...) that have several frames(frm_no=1, 2,
     ...). If the image size is big, the split_depth should be more than 0 to
-    avoid memory over. Path, indexes and frm_nums of last image is saved in the
+    avoid memory over. Path, indexes and frm_nos of last image is saved in the
     info file.
 
     Args:
@@ -129,12 +129,12 @@ class SplitFile(Image):
             set [3].
         param["frm_nums"] (list of int, optional): Set if frame numbers are not
             [1, 2, 3, ..., total_frames].
-        param["value_type"] (str): Value type of each pixel. uint8, uint16 or
-            float32.
+        param["value_type"] (str): Value type of each pixel. "uint8", "uint16"
+            or "float32".
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Image: Tiff image class
+        Image: Tiff Image class
 
     Examples:
         Import three tiff stacks as the same observation.
@@ -197,6 +197,7 @@ class SplitFile(Image):
         """Load a tiff from the path string.
 
         See :meth:`SingleFile.process`.
+
         """
         return SingleFile.process(reqs, param)
 

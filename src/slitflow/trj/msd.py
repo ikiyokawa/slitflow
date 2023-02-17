@@ -19,7 +19,7 @@ class Each(Table):
             Required column; ``trj_no``, ``x_(length_unit)``,
             ``y_(length_unit)``.
         param["group_depth"] (int): Column depth number of trajectory number.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Mean square displacement with time interval
@@ -86,7 +86,8 @@ class Each(Table):
 
 
 def calc_msd(df, param):
-    """This function is used in groupby.apply of trj.msd.Each.
+    """This function is used in :meth:`pandas.core.groupby.GroupBy.apply`
+    of :class:`Each`.
     """
     msd = np.zeros(1)
     for i in range(1, len(df)):
@@ -112,7 +113,7 @@ class FitAnom(Table):
             ``length_unit``. Required column; ``msd``.
         param["step"] (int): Step number for fitting from interval=0.
         param["group_depth"] (int): Data split depth for fitting.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Table containing the list of fitting parameters
@@ -144,7 +145,7 @@ class FitAnom(Table):
         calculated from initial slope, alpha=0.5.
 
         Args:
-            reqs[0] (pandas.DataFrame): MSD table contaning ``interval`` and
+            reqs[0] (pandas.DataFrame): MSD table containing ``interval`` and
                 ``msd`` columns.
             param["step"] (int): Step number for fitting from interval=0.
             param["interval"] (float): Time interval in second.
@@ -194,7 +195,7 @@ class ModelAnom(Table):
             x-axis.
         param["step"] (float): Step size of x-axis for the model curve.
         param["group_depth"] (int): Data split depth.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Model curve Table
@@ -270,7 +271,7 @@ class FitSimple(Table):
             Required params; ``length_unit``,
         param["step"] (int): Step number for fitting from interval=0.
         param["group_depth"] (int): Data split depth for fitting.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Table containing the list of diffusion coefficient
@@ -345,9 +346,9 @@ def msd_anom_diff(t, d, a):
     """Model function for MSD fitting with anomalous diffusion.
 
     Args:
-    t (float): Time interval value.
-    d (float): Diffusion coefficient.
-    a (float): Anomalous exponent. a should be > 0.
+        t (float): Time interval value.
+        d (float): Diffusion coefficient.
+        a (float): Anomalous exponent. a should be > 0.
 
     Returns:
         float: Mean square displacement
@@ -365,7 +366,7 @@ class ModelSimple(Table):
             x-axis.
         param["step"] (float): The step size of x-axis of the model curve.
         param["group_depth"] (int): Data split depth to calculate model.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Model curve Table
@@ -436,12 +437,12 @@ class DfromDeltaV(Table):
 
     Args:
         reqs[0] (Table): Trajectory Table. Required columns;
-            ``x_(length_unit)``, ``y_(length_unit). Required params;
+            ``x_(length_unit)``, ``y_(length_unit)``. Required params;
             ``length_unit``.
         param["calc_cols"] (list of str): Column names to calculate diffusion
             coefficients.
         param["group_depth"] (int): Data split depth.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Diffusion coefficient of each trajectory
@@ -510,11 +511,11 @@ class FitConfSaxton(Table):
     from initial slope, alpha=0.5.
 
     Args:
-        reqs[0] (Table): MSD Table. Required param; ``interval``,
-            ``length_unit``. Required column; ``msd``.
+        reqs[0] (Table): MSD Table. Required param; ``length_unit``.
+            Required columns; ``interval``, ``msd``.
         param["step"] (int): Step number for fitting from interval=0.
         param["group_depth"] (int): Data split depth.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Table containing the list of fitting parameters
@@ -546,8 +547,8 @@ class FitConfSaxton(Table):
         calculated from initial slope, r=final value of MSD.
 
         Args:
-            reqs[0] (pandas.DataFrame): MSD table contaning ``interval`` and
-                ``msd`` columns.
+            reqs[0] (pandas.DataFrame): MSD table. Required columns;
+                ``interval``, ``msd``.
             param["step"] (int): Step number for fitting from interval=0.
             param["interval"] (float): Time interval in second.
             param["index_cols"] (list of str): Column names for index.
@@ -589,9 +590,9 @@ def msd_confs_diff(t, d, r):
     """Model function for MSD fitting with confined diffusion.
 
     Args:
-    t (float): Time interval value.
-    d (float): Diffusion coefficient.
-    r (float): Confinement radius.
+        t (float): Time interval value.
+        d (float): Diffusion coefficient.
+        r (float): Confinement radius.
 
     Returns:
         float: Mean square displacement
@@ -605,12 +606,12 @@ class ModelConfSaxton(Table):
     Args:
         reqs[0] (FitConfSaxton): Table containing fitting parameters of MSD
             with confined diffusion. Required columns; ``diff_coeff``, ``r``.
-            Required params; ``length_unit``,
+            Required params; ``length_unit``.
         param["x_lims"] (list of float): Minimum and maximum position of
             x-axis.
         param["step"] (float): Step size of x-axis for the model curve.
         param["group_depth"] (int): Data split depth.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Model curve Table

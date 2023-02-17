@@ -4,15 +4,15 @@ from ..img.image import Image, RGB, set_color_index
 
 
 class Obs2Depth(Image):
-    """Merge images from different Observations into a top level depth.
+    """Merge images from different observations into the top level depth.
 
     .. caution::
 
-        This class only works when used in a Pipeline object. Running process
-        method or creating a Data object does not work appropriately.
+        This class only works when used in a Pipeline object. Running the
+        process method or creating a Data object does not work appropriately.
 
-    Observation names for merging should be listed into obs_name argument
-    of :meth:`slitflow.manager.Pipeline.add` in Pipeline class.
+    Observation names for merging should be listed into ``obs_name`` argument
+    of :meth:`~slitflow.manager.Pipeline.add` in Pipeline class.
 
     Args:
         reqs (list of Image): Images for merge.
@@ -24,11 +24,11 @@ class Obs2Depth(Image):
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Image: Merged image
+        Image: Merged Image
     """
 
     def set_index(self):
-        """Add observation number to the top-level of index columns.
+        """Add observation number to the top level of index columns.
         """
         indices = []
         pcol_name = self.info.get_column_name()[0]
@@ -60,12 +60,12 @@ class Obs2Depth(Image):
         self.info.add_param(
             "merged_obs_names", param["merged_obs_names"], "list of str",
             "Merged observation names for correspondence of numbers and\
-                names.")
+                names")
         self.info.set_split_depth(param["split_depth"])
 
     @staticmethod
     def process(reqs, param):
-        """Merge images from different Observations into a top level depth.
+        """Merge images from different observations into the top level depth.
 
         Args:
             reqs (list of numpy.ndarray): Images from different
@@ -78,18 +78,18 @@ class Obs2Depth(Image):
 
 
 class Obs2DepthRGB(RGB):
-    """Merge RGB images from different Observations into a top level depth.
+    """Merge RGB images from different observations into the top level depth.
 
     .. caution::
 
-        This class only works when used in a Pipeline object. Running process
-        method or creating a Data object does not work appropriately.
+        This class only works when used in a Pipeline object. Running the
+        process method or creating a Data object does not work appropriately.
 
-    Observation names for merging should be listed into obs_name argument
-    of :meth:`slitflow.manager.Pipeline.add` in Pipeline class.
+    Observation names for merging should be listed into ``obs_name`` argument
+    of :meth:`~slitflow.manager.Pipeline.add` in Pipeline class.
 
     Args:
-        reqs (list of slitflow.img.image.RGB): RGB Images for merge.
+        reqs (list of ~slitflow.img.image.RGB): RGB Images for merge.
         param["col_name"] (str, optional): New column name for observation
             numbers. Defaults to "obs_no".
         param["col_description"] (str): New column description. Defaults to
@@ -131,12 +131,12 @@ class Obs2DepthRGB(RGB):
         self.info.add_param(
             "merged_obs_names", param["merged_obs_names"], "list of str",
             "Merged observation names for correspondence of numbers and\
-                names.")
+                names")
         self.info.set_split_depth(param["split_depth"])
 
     @ staticmethod
     def process(reqs, param):
-        """Merge RGB images from different Observations into a top level depth.
+        """Merge RGB images from different observations into the top level depth.
 
         Args:
             reqs (list of numpy.ndarray): RGB images from different

@@ -16,8 +16,8 @@ class Gauss(Image):
 
     Args:
         reqs[0] (Image): Image stack.
-        param["kernel_size"] (int): GaussianBlur kernel size must be odd.
-        param["split_depth"] (int): File split depth.
+        param["kernel_size"] (odd integer): GaussianBlur kernel size.
+        param["split_depth"] (int): File split depth number.
 
     Return:
         Image: Filtered Image
@@ -38,7 +38,7 @@ class Gauss(Image):
         Args:
             reqs[0] (numpy.ndarray): Numpy 3D array with the shape of
                 (frame number, height, width).
-            param["kernel_size"] (int): GaussianBlur kernel size must be odd.
+            param["kernel_size"] (odd integer): GaussianBlur kernel size.
 
         Returns:
             numpy.ndarray: Filtered image array
@@ -71,11 +71,11 @@ class DifferenceOfGaussian(Image):
     Args:
         reqs[0] (Image): Image to apply the filter to. Required parameters;
             ``length_unit``, ``pitch``.
-        param["wavelength"] (int): Emission wavelength in ``length_unit``.
+        param["wavelength"] (int): Emission wavelength in length_unit.
         param["NA"] (float): Numerical aperture.
         param["size_factor"] (float, optional): Particle size factor to
             multiply PSF size. Defaults to 1.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Image: Filtered image object in ``float32``
@@ -152,7 +152,7 @@ class LocalMax(Image):
             filter to. Required params; ``d_psf``.
         param["mask_factor"] (float, optional): Mask size factor to multiply
             PSF diameter. Defaults to 1.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Image: Filtered image object
@@ -203,8 +203,8 @@ class LocalMaxWithDoG(Image):
     """Local max image for particle detection with the Difference of Gaussian.
 
     This class is the combination of
-    :class:`slitflow.img.filter.DifferenceOfGaussian` and
-    :class:`slitflow.img.filter.LocalMax`.
+    :class:`~slitflow.img.filter.DifferenceOfGaussian` and
+    :class:`~slitflow.img.filter.LocalMax`.
 
     You can use this class to skip exporting the result of DifferenceOfGaussian
     .
@@ -212,13 +212,13 @@ class LocalMaxWithDoG(Image):
     Args:
         reqs[0] (Image): Image to apply the filter to. Required parameters;
             ``length_unit``, ``pitch``.
-        param["wavelength"] (int): Emission wavelength in ``length_unit``.
+        param["wavelength"] (int): Emission wavelength in length_unit.
         param["NA"] (float): Numerical aperture.
         param["size_factor"] (float, optional): Particle size factor to
             multiply PSF size. Defaults to 1.
         param["mask_factor"] (float): Mask size factor to multiply PSF
             diameter. Defaults to 1.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Image: Filtered image object

@@ -40,18 +40,19 @@ class Tessellation(Pickle):
         one map. e.g. single cell nucleus and single cell surface.
 
     Args:
-        reqs[0] (Trajectory): X,Y-coordinate of trajectory. Required param;
+        reqs[0] (Table): X,Y-coordinate of trajectory. Required param;
             ``length_unit``, ``interval``. Required columns; ``trj_no``,
             ``frm_no``, ``x_(length_unit)``, ``y_(length_unit)``.
         param["method"] (str): Tessellation method. See also the TRamWay
-            documentation. "grid", "hexagon", "kdtree", "kmeans", "gwr".
+            documentation. This should be "grid", "hexagon", "kdtree",
+            "kmeans", "gwr".
         param["param"] (dict, optional): Additional parameters to the 
             tessellation function.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Pickle: Partition object containing 
-        ``tramway.tessellation.base.Partition``
+        :class:`tramway.tessellation.base.Partition`
     """
 
     def set_info(self, param):
@@ -77,15 +78,16 @@ class Tessellation(Pickle):
         """Brief wrapper of tessellation of the TRamWay helper module.
 
         Args:
-            reqs[0] (Trajectory): X,Y-coordinate of trajectory. Required param;
+            reqs[0] (Table): X,Y-coordinate of trajectory. Required param;
                 ``length_unit`` and ``interval``. Required columns; ``trj_no``,
                 ``frm_no``, ``x_(length_unit)`` and ``y_(length_unit)``.
             param["method"] (str): Tessellation method. See also the TRamWay
-                documentation. "grid", "hexagon", "kdtree", "kmeans" or "gwr".
-            param["param"] (dict, optional): Additional parameters to the 
+                documentation. This should be "grid", "hexagon", "kdtree",
+                "kmeans" or "gwr".
+            param["param"] (dict, optional): Additional parameters to the
                 tessellation function.
             param["calc_cols"] (list of str): Column names of X,Y-coordinate.
-            param["interval"] (float): Time interval in second.            
+            param["interval"] (float): Time interval in second.
 
         Returns:
             tramway.tessellation.base.Partition: Partition object of TRamWay
@@ -119,8 +121,8 @@ class Inference(Pickle):
     Args:
         reqs[0] (Tessellation): Wrapped class object of the TRamWay
             tessellation.
-        param["mode"] (str): Inference mode string. ``d``, ``dd``, ``df``, 
-            ``dv``.
+        param["mode"] (str): Inference mode string. This should be ``d``,
+            ``dd``, ``df`` or ``dv``.
         param["param"] (dict, optional): Additional parameters to the 
             inference function.
 
@@ -148,8 +150,8 @@ class Inference(Pickle):
         Args:
             reqs[0] (tramway.tessellation.base.Partition): TRamWay
                 tessellation object.
-            param["mode"] (str): Inference mode string. ``d``, ``dd``, ``df``, 
-                ``dv``.
+            param["mode"] (str): Inference mode string. This should be ``d``,
+                ``dd``, ``df`` or ``dv``.
             param["param"] (dict, optional): Additional parameters to the 
                 inference function.
 
@@ -175,14 +177,14 @@ class MapPlot(Figure):
         reqs[0] (Tessellation): Wrapped class object of the TRamWay
             tessellation.
         reqs[1] (Inference): Wrapped class object of the TRamWay inference.
-        param["feature"] (str): Feature name for plotting. ``diffusivity``
-            , ``force``, ``potential``, ``drift`` depended on ``mode`` 
-            parameter of inference.
+        param["feature"] (str): Feature name for plotting. This should be
+            ``diffusivity`` , ``force``, ``potential``, ``drift``
+            depended on ``mode`` parameter of inference.
         param["param"] (dict, optional): Additional parameters to the 
             map_plot function.
 
     Returns:
-        Figure: Feature figure class object
+        Figure: Feature Figure object
     """
 
     def set_info(self, param):
@@ -210,13 +212,13 @@ class MapPlot(Figure):
                 tessellation object.
             reqs[1] (tramway.inference.base.Maps): Wrapped class object of the
                 TRamWay inference.
-            param["feature"] (str): Feature name for plotting. ``diffusivity``
-                , ``force``, ``potential``, ``drift``.
+            param["feature"] (str): Feature name for plotting. This should be
+                ``diffusivity`` , ``force``, ``potential`` or ``drift``.
             param["param"] (dict, optional): Additional parameters to the 
                 map_plot function.
 
         Returns:
-            matplotlib.figure.Figure: matplotlib figure object
+            matplotlib.figure.Figure: matplotlib Figure object
         """
         helper = importlib.import_module("tramway.helper")
         P = reqs[0]
@@ -234,5 +236,7 @@ class MapPlot(Figure):
         return fig
 
     def post_run(self):
+        """Save the color bar label of the figure as parameter.
+        """
         label = self.data[0].axes[0].yaxis.get_label_text()
         self.info.add_param("label", label, "str", "Color bar label string")

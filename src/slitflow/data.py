@@ -19,12 +19,11 @@ class Data():
     Attributes:
         info (Info): Information object containing column and parameter
             information.
-        reqs (list of :class:`slitflow.data.Data`):
+        reqs (list of :class:`~slitflow.data.Data`):
             List of Data objects required to run :meth:`process` static method
             of this class.
-        data (list of data such as :class:`pandas.DataFrame` or
-            :class:`numpy.ndarray`): List of result data calculated by
-            :meth:`process`.
+        data (list of data such as :class:`pandas.DataFrame` or :class:`numpy.ndarray`):
+            List of result data calculated by :meth:`process`.
         n_worker (int): Number of CPU used by :meth:`process`. This number is
             defined by cpu_count * :data:`slitflow.CPU_RATE`. This
             attribute is used during :meth:`run_mp`.
@@ -90,7 +89,7 @@ class Data():
     def set_split(self, split_depth):
         """Split info index and data.
 
-        This method can be used to overwrite split_depth
+        This method can be used to overwrite ``split_depth``.
         """
         self.info.set_split_depth(split_depth)
         if len(self.data) > 0:
@@ -125,7 +124,8 @@ class Data():
         This method creates columns and parameters information. The columns
         information is used to handle data structure. The parameter
         dictionaries are set as param of :meth:`process`.
-        This method is called before :meth:`run`. Implemented in subclass.
+        This method is called before :meth:`~slitflow.data.Data.run`.
+        Implemented in subclass.
 
         Args:
             param (dict, optional): Parameters for columns or params.
@@ -136,7 +136,7 @@ class Data():
         """Create index structure of this analysis data.
 
         This step strongly depends on the analysis type. Frequently used
-        processes are in  :mod:`slitflow.setindex`.
+        processes are in :mod:`slitflow.setindex`.
 
         """
         setindex.from_req(self, 0)
@@ -171,7 +171,7 @@ class Data():
     def run_mp(self, reqs=None, param=None):
         """Execute run method using multiple CPU.
 
-        This method uses ``concurrent.futures.ProcessPoolExecutor``.
+        This method uses :class:`~concurrent.futures.ProcessPoolExecutor`.
 
         """
         if reqs is not None:

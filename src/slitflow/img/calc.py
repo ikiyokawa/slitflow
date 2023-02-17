@@ -13,7 +13,7 @@ class MaskArea(Table):
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Table: Area table
+        Table: Area Table
     """
 
     def set_index(self):
@@ -34,7 +34,7 @@ class MaskArea(Table):
         """Calculate mask area by counting non-zero pixel number in an image.
 
         Args:
-            reqs[0] (numpy.array): Image stack to calculate area.
+            reqs[0] (numpy.ndarray): Image stack to calculate area.
             param["pitch"] (int): Length per pixel in length_unit.
 
         Returns:

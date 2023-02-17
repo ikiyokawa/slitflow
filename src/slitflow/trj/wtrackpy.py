@@ -8,7 +8,7 @@
     Please create your custom class to use Trackpy functions that are not
     provided in this module.
 
-    Do not ask the trackpy developers any questions about the wrapper part
+    Do not ask the Trackpy developers any questions about the wrapper part
     that is not directly related to the Trackpy package.
 
 If you use Trackpy functions in this module, please cite original package
@@ -42,8 +42,8 @@ class Link(Table):
             ``length_unit``. Required columns; ``img_no``, ``frm_no``,
             ``x_(length_unit)`` and ``y_(length_unit)``.
         param["search_range"] (float): Maximum distance features can move
-            between frames in length unit.
-        param["split_depth"] (int): File split depth.
+            between frames in length_unit.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Trajectory Table
@@ -89,7 +89,7 @@ class Link(Table):
                 Required params; ``length_unit``. Required columns; ``img_no``,
                 ``frm_no``, ``x_(length_unit)`` and ``y_(length_unit)``.
             param["search_range"] (float): Maximum distance features
-                can move between frames in length unit.
+                can move between frames in length_unit.
             param["calc_cols"] (list of str): Column names of X,Y-coordinate.
             param["all_cols"] (list of str): Column names for reindex.
             param["index_cols"] (list of str): Column names for index.
@@ -119,7 +119,7 @@ class RefineCoM(Table):
         reqs[1] (Table): X,Y-coordinate of trajectory. Required columns;
             ``x_(length_unit)``, ``y_(length_unit)``.
         param["radius"] (int): Mask radius for trackpy.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Refined X,Y-coordinate
@@ -198,13 +198,13 @@ class Locate(Table):
     """Brief wrapper of trackpy batch function.
 
     This class uses only two-dimensional image.
-    Image stack should be split into image numbers.
+    Image stack should be split into the image number.
 
     Args:
-        reqs[0] (Image): Image stack for location detection. Required
+        reqs[0] (Image): Image for location detection. Required
             parameters: ``length_unit``.
         param["diameter"] (odd integer): Feature size in pixel.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: X,Y-coordinate of detected points
@@ -257,7 +257,8 @@ class Locate(Table):
         """Brief wrapper of trackpy batch function.
 
         Args:
-            reqs[0] (numpy.ndarray): Image stack for location detection.
+            reqs[0] (numpy.ndarray): Numpy 2D array of image for location
+                detection.
             param["diameter"] (odd integer): Feature size in pixel.
             param["pitch"] (float): Pixel size in length_unit/pix.
             param["col_names"] (list of str): List of column names. This should
@@ -266,7 +267,7 @@ class Locate(Table):
                 Total integrated brightness (mass), Radius of gyration (size),
                 Eccentricity (ecc), Signal (signal), Total integrated
                 brightness in raw_image (raw_mass), Error in a feature's
-                position (ep)]
+                position (ep)].
 
         Returns:
             pandas.DataFrame: X,Y-coordinate and other parameters of detected

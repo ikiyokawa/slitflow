@@ -11,15 +11,15 @@ from ..fun.misc import reduce_list as rl
 
 
 class Mean(Table):
-    """Averaged value of specific column.
+    """Averaged value of a specific column.
 
     Args:
-        reqs[0] (Table): Target table for averaging.
+        reqs[0] (Table): Target Table for averaging.
         param["calc_col"] (str): Column name for averaging.
         param["index_cols"] (list of str, optional): Column names to gather
-            rows. If you set [``img_no``], average values are calculated for
+            rows. If you set ["img_no"], average values are calculated for
             each image number.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Summarized Table containing average, std, sem and count columns
@@ -56,7 +56,7 @@ class Mean(Table):
         self.info.delete_column(keeps=param["index_cols"])
         self.info.add_param(
             "index_cols", param["index_cols"], "list of str",
-            "Index column names")
+            "Index columns for groupby")
 
         calc_dict = self.reqs[0].info.get_column_dict(param["calc_col"])
         self.info.add_column(
@@ -81,17 +81,17 @@ class Mean(Table):
 
     @staticmethod
     def process(reqs, param):
-        """Averaged value of specific column.
+        """Averaged value of a specific column.
 
         Args:
             reqs[0] (pandas.DataFrame): Target table for averaging.
             param["calc_col"] (str): Column name for averaging.
             param["index_cols"] (list of str, optional): Column names to gather
-                rows. If you set ``img_no``, average values are calculated for
+                rows. If you set ["img_no"], average values are calculated for
                 each image number.
 
         Returns:
-            pandas.DataFrame: Summarized Table containing average, std, sem
+            pandas.DataFrame: Summarized table containing average, std, sem
             and count columns
         """
         df = reqs[0].copy()
@@ -187,6 +187,17 @@ class Test(Table):
 
     @staticmethod
     def process(reqs, param):
+        """Statistics test suite.
+
+        Args:
+            reqs[0] (pandas.DataFrame): Sample table.
+            param["sample_col"] (str): Sample column name.
+            param["replicate_col"] (str): Replicate column name.
+            param["calc_col"] (str): Column name to values for test.
+
+        Returns:
+            pandas.DataFrame: Test result table
+        """
         sp = importlib.import_module("scikit_posthocs")
         df = reqs[0].copy()
         df = df[[param["sample_col"], param["replicate_col"], param["calc_col"]]]

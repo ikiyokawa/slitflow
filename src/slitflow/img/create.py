@@ -7,16 +7,16 @@ np.random.seed(RANDOM_SEED)
 
 
 class Black(Image):
-    """Create black image using Index table.
+    """Create black Image using Index table.
 
     Args:
         reqs[0] (Table): Index table.
         param["pitch"] (float): Pixel size in length_unit/pix.
-        param["interval"] (float, optional): Time interval (s).
+        param["interval"] (float, optional): Time interval in second.
         param["img_size"] (list of int): Width and height of each image (pix).
         param["length_unit"] (str): Unit string for column names such as "um",
             "nm", "pix".
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Image: Black Image
@@ -59,10 +59,11 @@ class RandomRGB(RGB):
 
     Args:
         reqs[0] (Table): Index table.
-        param["pitch"] (float): Pitch size with unit/pix.
-        param["interval"] (float, optional): Time interval (s).
-        param["img_size"] (list of int): Width and height of each image (pix).
-        param["split_depth"] (int): File split depth.
+        param["pitch"] (float): Pitch size in length_unit/pix.
+        param["interval"] (float, optional): Time interval in second.
+        param["img_size"] (list of int): Width and height of each image in
+            pixel.
+        param["split_depth"] (int): File split depth number.
         param["length_unit"] (str): Unit string for column names such as "um",
             "nm", "pix".
         param["seed"] (int, optional): Random seed.

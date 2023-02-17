@@ -13,7 +13,7 @@ class EvalOneCol(Table):
     Args:
         reqs[0] (Table): Table containing columns for calculation.
         param["calc_cols"] (list of str): Column names to calculate.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
         param["type"] (str, optional): Preset calculation type. Select
             from "log10" or user defined. type is also used as new column name
             headers.
@@ -90,7 +90,7 @@ class EvalTwoCols(Table):
             column2=y. Ex. "x*y".
         param["new_col_info"](tuple of str): Information of new
             columns. This should be ("name", "type", "unit", "description").
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Calculated column data
@@ -149,7 +149,7 @@ class Centering(Table):
         reqs[0] (Table): Table to shift column values.
         param["calc_cols"] (list of str): Coordinate column names to shift.
         param["group_depth"] (int): Data split depth.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Table containing shifted columns
@@ -216,7 +216,7 @@ class AddGauss(Table):
         param["baselines"] (float): Baseline value of Gauss values.
         param["ratio"] (float): Ratio of Gauss fraction.
         param["seed"] (int, optional): Random seed.
-        param["split_depth"] (int): File split depth.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Table with Gauss values
@@ -246,14 +246,14 @@ class AddGauss(Table):
         """Add Gaussian random values to table.
 
         Args:
-            reqs[0] (np.ndarray): Table to add Gauss value.
+            reqs[0] (numpy.ndarray): Table to add Gauss value.
             param["name"] (str): Column name of Gauss value.
             param["sigmas"] (float): Standard deviation of Gauss values.
             param["baselines"] (float): Baseline value of Gauss values.
             param["ratio"] (float): Ratio of Gauss fraction.
 
         Returns:
-            np.ndarray: Table with Gauss values
+            numpy.ndarray: Table with Gauss values
         """
         df = reqs[0].copy()
         counts = np.round(np.array(param["ratio"]) * len(df)).astype(np.int32)

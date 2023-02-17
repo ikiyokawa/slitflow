@@ -23,7 +23,7 @@ def make_info_path(root_dir, grp_no, ana_no, obs_name,
         grp_name (str, optional): Set group name if you make a new group.
 
     Returns:
-        str: Path to info JSON file with ``.sf`` extension.
+        str: Path to info JSON file with ``.sf`` extension
     """
     grp_id = "g" + str(grp_no)
     if grp_name == "":  # find from folder
@@ -126,7 +126,7 @@ def make_group(root_dir, grp_no, grp_name):
     Args:
         root_dir (str): Path to the project directory.
         grp_no (int): Group number.
-        grp_name (Str): Group name.
+        grp_name (str): Group name.
 
     Returns:
         str: Path to the group directory
@@ -152,7 +152,7 @@ def get_obs_names(root_dir, req_address):
             the directory to search observations names.
 
     Returns:
-        list of str: List of observation names.
+        list of str: List of observation names
     """
     grp_no = req_address[0]
     ana_no = req_address[1]

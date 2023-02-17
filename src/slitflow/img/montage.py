@@ -19,10 +19,10 @@ class Gray(image.Image):
         reqs[0] (Image): Image stack to create montage.
         param["grid_shape"] (tuple of int): See :func:`skimage.util.montage`.
         param["padding_width"] (int): See :func:`skimage.util.montage`.
-        param["split_depth] (int): File split depth number.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
-        Image: Montage image
+        Image: Montage Image
     """
 
     def set_info(self, param={}):
@@ -86,10 +86,10 @@ class RGB(image.RGB):
         reqs[0] (Image): Image stack to create montage.
         param["grid_shape"] (tuple of int): See :func:`skimage.util.montage`.
         param["padding_width"] (int): See :func:`skimage.util.montage`.
-        param["split_depth] (int): File split depth number.
+        param["split_depth"] (int): File split depth number.
 
     Returns:
-        Image: Montage image
+        Image: Montage Image
     """
 
     def set_info(self, param={}):
