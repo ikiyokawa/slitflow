@@ -397,24 +397,6 @@ class Pipeline():
         Returns:
             pandas.Int64Index: Task row indices to run
 
-        Examples:
-            When index of self.df is reset:
-
-            .. code-block:: python
-
-                >>> self.convert_indices()
-                self.df.index
-                >>> self.convert_indices(-1)
-                pd.Index([self.df.index[-1]])
-                >>> self.convert_indices([1, -1])
-                pd.Index([self.df.index[1], self.df.index[-1]])
-                >>> self.convert_indices(range(3))
-                self.df.index[:3]
-                >>> self.convert_indices((1, -1))
-                self.df.index[1:-1]
-                >>> self.convert_indices((1, 0, 2))
-                self.df.index[1::2]
-
         """
         index_buf = self.df.index
         if indices is None:
@@ -677,16 +659,16 @@ class Pipeline():
 
         Args:
             fig_name (str): Name of the flowchart file.
+            is_vertical (bool): Flowchart direction. Defaults to False
+                (horizontal).
+            scale (tuple of int): Scale factors of (width, height).
+            format (str): File save format. Defaults to "png".
+            dpi (int): Dot per inch of exporting file.           
             label_type (str): Description type. This should be
 
                 * "class_desc" : shows the one-line class description from class docstring.
                 * "grp_ana" : shows "grp_name (newline) ana_name".
 
-            is_vertical (bool): Flowchart direction. Defaults to False
-                (horizontal).
-            scale (tuple of int): Scale factors of (width, height).
-            format (str): File save format. Defaults to "png".
-            dpi (int): Dot per inch of exporting file.
         """
 
         graph_df = self.df[["address", "grp_name", "ana_name",
