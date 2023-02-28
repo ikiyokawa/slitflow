@@ -24,6 +24,8 @@ this module.
 """
 
 import importlib  # for tramway  # visual studio 2008 c++ runtime required
+import matplotlib.pyplot as plt
+
 from ..data import Pickle
 from ..fig.figure import Figure
 
@@ -223,6 +225,8 @@ class MapPlot(Figure):
         helper = importlib.import_module("tramway.helper")
         P = reqs[0]
         T = reqs[1]
+
+        plt.clf()
         if "param" in param:
             M = helper.map_plot(
                 T, P, feature=param["feature"], **param["param"])
