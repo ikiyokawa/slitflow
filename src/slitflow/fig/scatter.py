@@ -1,8 +1,6 @@
-import pandas as pd
 import matplotlib.pyplot as plt
 
-from .figure import Figure
-from . import style
+from .figure import Figure, inherit_split_depth
 from ..fun.misc import reduce_list as rl
 
 
@@ -15,7 +13,6 @@ class Simple(Figure):
         param["marker_styles"] (str or list of str): Marker style of each
             group. Defaults to "o".
         param["group_depth"] (int): Data split depth number.
-        param["split_depth"] (int): File split depth number.
 
     Returns:
         Figure: matplotlib Figure object
@@ -25,14 +22,12 @@ class Simple(Figure):
         """Copy info from reqs[0] and add params.
         """
         self.info.copy_req(0)
-        self.info.delete_column(keeps=self.info.get_column_name("index"))
+        inherit_split_depth(self, 0, param["group_depth"])
         self.info.add_param(
             "calc_cols", param["calc_cols"], "str", "X and Y columns")
         self.info.add_param(
             "marker_styles", param["marker_styles"], "list of str",
             "Marker style of each group")
-        self.info.set_group_depth(param["group_depth"])
-        self.info.set_split_depth(param["split_depth"])
 
     @staticmethod
     def process(reqs, param):

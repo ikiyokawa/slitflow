@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ..fig.style import Basic
-from ..fig.figure import Figure
+from .style import Basic
+from .figure import Figure, inherit_split_depth
 from ..fun.misc import reduce_list as rl
 
 
@@ -15,7 +15,6 @@ class All(Figure):
         param["trj_depth"] (int): Column depth of trajectory number.
         param["centered"] (bool, optional): If True, the centroid position from
             all trajectory positions is set as (0, 0).
-        param["split_depth"] (int): File split depth number.
 
     Returns:
         Figure: Trajectory Figure object
@@ -25,6 +24,7 @@ class All(Figure):
         """Copy and modify info from reqs[0] and add params.
         """
         self.info.copy_req(0)
+        inherit_split_depth(self, 0, param["trj_depth"])
         length_unit = self.info.get_param_value("length_unit")
         self.info.add_param(
             "calc_cols", ["x_" + length_unit, "y_" + length_unit],
@@ -34,10 +34,6 @@ class All(Figure):
             self.info.add_param(
                 "centered", param["centered"], "bool",
                 "Whether to set the centroid of positions to zero")
-        self.info.set_group_depth(param["trj_depth"])
-        self.info.set_split_depth(param["split_depth"])
-        index_cols = self.info.get_column_name("index")
-        self.info.delete_column(keeps=index_cols[:self.info.split_depth()])
 
     @staticmethod
     def process(reqs, param):
@@ -45,7 +41,6 @@ class All(Figure):
 
         Args:
             reqs[0] (pandas.DataFrame): X,Y-coordinate of trajectories.
-            param["trj_depth"] (int): Column depth of trajectory number.
             param["calc_cols"] (list of str): Column names for X and Y axes.
             param["index_cols"] (list of str): Column names of index.
                 This column is used for :meth:`pandas.DataFrame.groupby`.
@@ -81,7 +76,7 @@ class StyleAll(Basic):
     Args:
         reqs[0] (Figure): Trajectory Figure.
         param["half_width"] (float, optional): Half width of rendering axes in
-            length_unit. Used if trajectory is centered.
+            ``length_unit``. Used if trajectory is centered.
 
     Returns:
         Figure: Styled Figure object

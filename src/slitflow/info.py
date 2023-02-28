@@ -30,6 +30,7 @@ class Info():
         index (pandas.DataFrame): Index table to describe the data
             hierarchy.
         file_nos (list of int): List of split file numbers.
+        split_depth_req (int): Split depth number used for reqs_split.
 
     """
 
@@ -48,6 +49,7 @@ class Info():
         self.index = pd.DataFrame()
         self.set_path(info_path)
         self.load()
+        self.split_depth_req = None
 
     def __str__(self):
         info_str = "Data: " + fullname(self.Data)
@@ -245,6 +247,7 @@ class Info():
         """
         if split_depth is None:
             split_depth = self.split_depth()
+        self.split_depth_req = split_depth
         index_names = self.get_column_name("index")
         if split_depth > 0:
             if "_split" in self.index.columns:
@@ -352,9 +355,9 @@ class Info():
         Args:
             type (str) : Column type to return
 
-                * "all" : all column names.
-                * "index" : column names whose depth > 0.
-                * "col" : column names that do not belong to the index.
+                * ``all`` : all column names.
+                * ``index`` : column names whose depth > 0.
+                * ``col`` : column names that do not belong to the index.
 
         Returns:
             list of str: List of column names

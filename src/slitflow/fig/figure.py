@@ -1,9 +1,11 @@
-import os
+import io
 
 import numpy as np
 import matplotlib
-matplotlib.use("tkagg")
+matplotlib.use("TKAgg")
 import matplotlib.pyplot as plt
+import cv2
+
 from ..data import Pickle
 from ..img.image import RGB
 
@@ -24,7 +26,7 @@ class Figure(Pickle):
         mode 2.
         """
         super().save_data(data, path)
-        plt.clf()
+        plt.close()
 
 
 class ToTiff(RGB):
@@ -118,11 +120,22 @@ def get_stack(fig, dpi):
     """
     stack = []
     fig.set_dpi(dpi)
-    fig.canvas.draw()
-    fig_rgb = np.frombuffer(fig.canvas.tostring_rgb(), dtype=np.uint8)
-    fig_rgb = fig_rgb.reshape(
-        fig.canvas.get_width_height()[::-1] + (3,))
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png", dpi=dpi)
+    buf.seek(0)
+    fig_rgb = np.frombuffer(buf.getvalue(), dtype=np.uint8)
+    img = cv2.imdecode(fig_rgb, 1)
+    fig_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
     stack.append(np.flipud(fig_rgb[:, :, 0]))
     stack.append(np.flipud(fig_rgb[:, :, 1]))
     stack.append(np.flipud(fig_rgb[:, :, 2]))
     return stack
+
+
+def inherit_split_depth(Data, reqs_no, group_depth):
+    Data.info.set_group_depth(group_depth)
+    split_depth = Data.reqs[reqs_no].info.split_depth_req
+    keeps = Data.info.get_column_name("index")[:split_depth]
+    Data.info.delete_column(keeps=keeps)
+    Data.info.set_split_depth(split_depth)

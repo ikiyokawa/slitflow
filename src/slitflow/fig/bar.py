@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from .figure import Figure
+from .figure import Figure, inherit_split_depth
 from ..fun.misc import reduce_list as rl
 
 
@@ -15,7 +15,6 @@ class Simple(Figure):
         param["err_col"] (str, optional): Column name for error bar.
         param["cap_size"] (float, optional): Cap size of error bar.
         param["group_depth"] (int): Data split depth number.
-        param["split_depth"] (int): File split depth number.
 
     Returns:
         Figure: Bar Figure object
@@ -25,7 +24,8 @@ class Simple(Figure):
         """Copy info from reqs[0] and add params.
         """
         self.info.copy_req(0)
-        self.info.delete_column(keeps=self.info.get_column_name("index"))
+        inherit_split_depth(self, 0, param["group_depth"])
+
         self.info.add_param(
             "calc_cols", param["calc_cols"], "str", "X and Y columns")
         if "bar_widths" not in param:
@@ -40,8 +40,6 @@ class Simple(Figure):
                 param["cap_size"] = 2
             self.info.add_param(
                 "cap_size", param["cap_size"], "float", "Error bar cap size")
-        self.info.set_group_depth(param["group_depth"])
-        self.info.set_split_depth(param["split_depth"])
 
     @staticmethod
     def process(reqs, param):
@@ -103,7 +101,6 @@ class WithModel(Figure):
             Required if "err_col" in param. Defaults to 2.
         param["group_depth"] (int): Data split depth number.
         param["group_depth_model"] (int): Depth number to split model data.
-        param["split_depth"] (int): File split depth number.
 
     Returns:
         Figure: Bar Figure object with error and model
@@ -111,7 +108,7 @@ class WithModel(Figure):
 
     def set_info(self, param={}):
         self.info.copy_req(0)
-        self.info.delete_column(keeps=self.info.get_column_name("index"))
+        inherit_split_depth(self, 0, param["group_depth"])
         self.info.add_param(
             "calc_cols", param["calc_cols"], "str", "Columns to calculate")
         if "err_col" in param:
@@ -128,8 +125,6 @@ class WithModel(Figure):
         self.info.add_param(
             "index_cols_model", index_cols_model, "list of str",
             "Index column names of model curve")
-        self.info.set_group_depth(param["group_depth"])
-        self.info.set_split_depth(param["split_depth"])
 
     @staticmethod
     def process(reqs, param):

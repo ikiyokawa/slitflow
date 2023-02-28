@@ -21,9 +21,10 @@ Bug fixes
 --------------------
 
 * Fixed bug in :class:`~slitflow.fig.figure.ToTiff` raising ValueError related
-  with matplotlib.Figure.canvas.draw on macOS backend.
-* Fixed bug in :class:`~slitflow.manager.Pipeline.set_grp_name` related with
+  to matplotlib.Figure.canvas.draw on macOS backend.
+* Fixed bug in :class:`~slitflow.manager.Pipeline.set_grp_name` related to
   loading CSV files.
+* Fixed bugs related to splitting depth in figure classes.
 
 
 Identified issues
