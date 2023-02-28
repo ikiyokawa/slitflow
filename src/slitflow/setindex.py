@@ -14,9 +14,13 @@ def from_req(Data, req_no):
         req_no (int): Indicator number of the required data list to copy index.
     """
     index_cols = Data.info.get_column_name("index")
-    index_cols = index_cols + ["_split"]
-    index = Data.reqs[req_no].info.file_index()[index_cols].drop_duplicates()
-    Data.info.index = pd.concat([Data.info.index, index]).drop_duplicates()
+    index_req = Data.reqs[req_no].info.file_index()[
+        index_cols].drop_duplicates()
+    if len(Data.info.index) > 0:
+        index_self = Data.info.index[index_cols]
+        Data.info.index = pd.concat([index_self, index_req]).drop_duplicates()
+    else:
+        Data.info.index = index_req
     Data.info.set_index_file_no()
 
 

@@ -498,11 +498,11 @@ class Pipeline():
                     if ~np.isnan(req_file_no):
                         req.load(req_file_no)
                         req.split(req_split)
+                D.info.set_file_nos(save_no)
                 if run_mode == 3:
                     D.run_mp(reqs, param)
                 else:
                     D.run(reqs, param)
-                D.info.set_file_nos(save_no)
                 if ~np.isnan(save_no):
                     D.save()
         del D

@@ -24,7 +24,8 @@ Bug fixes
   to matplotlib.Figure.canvas.draw on macOS backend.
 * Fixed bug in :class:`~slitflow.manager.Pipeline.set_grp_name` related to
   loading CSV files.
-* Fixed bugs related to splitting depth in figure classes.
+* Fixed bug related to splitting depth in figure classes.
+* Fixed bug in :class:`~slitflow.img.image.Image` splitting data inappropriately.
 
 
 Identified issues
