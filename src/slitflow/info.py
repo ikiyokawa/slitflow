@@ -171,8 +171,8 @@ class Info():
         if self.split_depth() > 0:
             grouped = self.index.groupby(rl(index_names[:self.split_depth()]))
             dfs = list(list(zip(*grouped))[1])
-            for i, _ in enumerate(dfs):
-                dfs[i]["_file"] = i
+            for i, df in enumerate(dfs):
+                df["_file"] = i
             self.index = pd.concat(dfs)
         else:
             self.index["_file"] = 0
@@ -185,16 +185,11 @@ class Info():
                 the split data.
         """
         stash_split_depth = self.split_depth()
-        if file_nos is None:  # fill from index
-            if len(self.index) == 0:
-                file_nos = [0]
-            else:
-                file_nos = list(np.unique(self.index["_file"].values))
-        elif isinstance(file_nos, list):
+        if isinstance(file_nos, list):
             pass
         elif isinstance(file_nos, np.ndarray):
             file_nos = list(file_nos.astype(int))
-        elif pd.isna(file_nos):
+        elif file_nos is None or pd.isna(file_nos):  # fill from index
             if len(self.index) == 0:
                 file_nos = [0]
             else:

@@ -586,6 +586,8 @@ def set_legend(fig, labels=None, handle_indexes=None, kwargs={}, axes_no=0):
         return fig
     elif (labels is not None) and (handle_indexes is None):
         # create a new legend for all artists
+        if type(labels) is str:
+            labels = [labels]
         ax.legend(labels=labels, prop=font, **kwargs)
         return fig
     elif (labels is not None) and (handle_indexes is not None):
@@ -1055,7 +1057,7 @@ def is_log_scale(fig, bools, axes_no=0):
 
     Args:
         fig (matplotlib.figure.Figure): Figure object.
-        bools (list of bool):  Change axes to the log scale. e.g.,
+        bools (list or bool):  Change axes to the log scale. e.g.,
             [False, True] means that the only y-axis is the log scale.
 
     Returns:

@@ -47,7 +47,7 @@ class Image(Data):
     def split_data(self):
         """Split image array according to :attr:`slitflow.info.Info.index`.
         """
-        if len([x for x in self.data if x is not None]) == 0:
+        if not any([x is not None for x in self.data]):
             return  # e.g. data.load.image.MovieFromFolder
         stack = np.concatenate(self.data, axis=0)
         col_name = self.info.get_column_name(type="col")
@@ -55,10 +55,7 @@ class Image(Data):
         stack = stack.astype(col_dict[col_name[0]])
         lens = self.info.file_index().groupby("_split").size().values
         # TODO: test
-        if len(lens) == 0:
-            starts = [0]
-            ends = [1]
-        elif lens[0] == 0:
+        if len(lens) == 0 or lens[0] == 0:
             starts = [0]
             ends = [1]
         else:
@@ -197,7 +194,7 @@ def set_color_index(Data, req_no, index_depth):
     Data.info.index = Data.reqs[req_no].info.index.copy()
     dfs = []
     df_color = pd.DataFrame({"color": np.array([1, 2, 3])})
-    if len(Data.info.index) == 0:  # TODO: test
+    if len(Data.info.index) == 0:
         Data.info.index = df_color
     else:
         for _, row in Data.info.index.iterrows():

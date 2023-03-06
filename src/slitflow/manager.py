@@ -105,7 +105,7 @@ class Pipeline():
         class_name = self.set_class_name(class_name)
         run_mode = self.set_run_mode(run_mode)
         address = self.set_address(address)
-        grp_name = self.set_grp_name(address[0], grp_name)
+        grp_name = self.set_grp_name(address, grp_name)
         ana_name = self.set_ana_name(ana_name)
         reqs_address = self.set_reqs_address(reqs_address)
         obs_names = self.set_obs_names(obs_names)
@@ -181,20 +181,24 @@ class Pipeline():
             raise Exception("Address tuple should be (group_no, analysis_no).")
         return address
 
-    def set_grp_name(self, grp_no, grp_name):
+    def set_grp_name(self, address, grp_name):
         """Check input group name.
 
         Additional restrictions will be written here.
 
         Args:
+            address (tuple of int, or str): Input address should be (group_no,
+                analysis_no).
             grp_name (str): Group name to check.
 
         Returns:
             str: Group name
         """
-        if not grp_name or \
+        if address is None:
+            return ""
+        if not grp_name or (grp_name == "") or \
                 (not isinstance(grp_name, str) and np.isnan(grp_name)):
-            grp_id = "g" + str(grp_no)
+            grp_id = "g" + str(address[0])
             path = os.path.join(self.root_dir, grp_id + "_*")
             if len(glob.glob(path)) > 0:
                 grp_dir = glob.glob(path)[0]
@@ -397,6 +401,24 @@ class Pipeline():
         Returns:
             pandas.Int64Index: Task row indices to run
 
+        Examples:
+            When index of self.df is reset:
+
+            .. code-block:: python
+
+                >>> self.convert_indices()
+                self.df.index
+                >>> self.convert_indices(-1)
+                pd.Index([self.df.index[-1]])
+                >>> self.convert_indices([1, -1])
+                pd.Index([self.df.index[1], self.df.index[-1]])
+                >>> self.convert_indices(range(3))
+                self.df.index[:3]
+                >>> self.convert_indices((1, -1))
+                self.df.index[1:-1]
+                >>> self.convert_indices((1, 0, 2))
+                self.df.index[1::2]
+
         """
         index_buf = self.df.index
         if indices is None:
@@ -451,6 +473,7 @@ class Pipeline():
             D.run_mp(reqs, param)
         else:
             D.run(reqs, param)
+
         D.save()
         del D
         gc.collect()
@@ -562,8 +585,8 @@ class Pipeline():
                 below item.
             param["keep"] (str, optional): Defines delete type.
 
-                * "info" : Not delete information files.
-                * "folder" : Delete the information files but not the folder itself.
+                * ``info`` : Not delete information files.
+                * ``folder`` : Delete the information files but not the folder itself.
 
         """
         if "keep" not in param:
@@ -659,16 +682,16 @@ class Pipeline():
 
         Args:
             fig_name (str): Name of the flowchart file.
-            is_vertical (bool): Flowchart direction. Defaults to False
-                (horizontal).
-            scale (tuple of int): Scale factors of (width, height).
-            format (str): File save format. Defaults to "png".
-            dpi (int): Dot per inch of exporting file.           
             label_type (str): Description type. This should be
 
                 * "class_desc" : shows the one-line class description from class docstring.
                 * "grp_ana" : shows "grp_name (newline) ana_name".
 
+            is_vertical (bool): Flowchart direction. Defaults to False
+                (horizontal).
+            scale (tuple of int): Scale factors of (width, height).
+            format (str): File save format. Defaults to "png".
+            dpi (int): Dot per inch of exporting file.
         """
 
         graph_df = self.df[["address", "grp_name", "ana_name",

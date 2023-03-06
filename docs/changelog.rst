@@ -11,6 +11,7 @@ Features
 
 * Updated the documentation.
 * Added :class:`slitflow.img.noise.Gauss` class.
+* Added tests using pytest
 
 API changes
 --------------------

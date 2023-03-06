@@ -120,8 +120,8 @@ class WithModel(Figure):
                 "cap_size", param["cap_size"], "float", "Error bar cap size")
         self.info.add_param(
             "model_cols", param["model_cols"], "str", "Model columns")
-        self.info.set_group_depth(param["group_depth_model"])
-        index_cols_model = self.info.get_param_value("index_cols")
+        index_cols_model = self.reqs[1].info.get_column_name(
+            "index")[:param["group_depth_model"]]
         self.info.add_param(
             "index_cols_model", index_cols_model, "list of str",
             "Index column names of model curve")
