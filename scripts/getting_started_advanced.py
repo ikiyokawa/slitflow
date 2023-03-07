@@ -84,13 +84,13 @@ def pipeline_3_show_trajectory():
     PL.add(sf.fig.style.Basic(), 2, (3, 2), None, "style",
            ["RPB1"], [(3, 1)], [1],
            {"size": [4, 4], "margin": [0, 0, 0, 0],
-            "limit": [-14, 14, -14, 14], "tick": [[-15, 15], [-15, 15]],
+           "limit": [-14, 14, -14, 14], "tick": [[-15, 15], [-15, 15]],
             "is_box": True, "line_widths": 0.7,
             "split_depth": 1})
     PL.add(sf.fig.figure.ToTiff(), 2, (3, 3), None, "tif",
            ["RPB1"], [(3, 2)], [1],
            {"scalebar": [5, 0.05, 0.05, 2, [0, 0, 0]],
-            "dpi": 300, "split_depth": 0})
+           "dpi": 300, "split_depth": 0})
     PL.add(sf.img.montage.RGB(), 0, (3, 4), None, "mtg",
            ["RPB1"], [(3, 3)], [0],
            {"grid_shape": [1, 3], "padding_width": 0, "split_depth": 0})
@@ -107,11 +107,11 @@ def pipeline_4_spot_on():
     PL.add(sf.trj.wfastspt.JumpLenDist(), 0, (4, 1), "spoton", "hist",
            ["RPB1"], [(1, 9)], [0],
            {"trj_depth": 2, "MaxJump": 0.8, "BinWidth": 0.01, "CDF": False,
-            "TimePoints": 5, "split_depth": 2})
+           "TimePoints": 5, "split_depth": 2})
     PL.add(sf.trj.wfastspt.FitJumpLenDist2comp(), 0, (4, 2), None, "fit2",
            ["RPB1"], [(4, 1)], [0],
            {"lower_bound": [0.05, 0.0001, 0], "upper_bound": [25, 0.08, 1],
-            "LocError": 0.035, "iterations": 3, "dZ": 0.700, "useZcorr": False,
+           "LocError": 0.035, "iterations": 3, "dZ": 0.700, "useZcorr": False,
             "init": [0.5, 0.003, 0.3], "split_depth": 0})
     PL.add(sf.trj.wfastspt.ModelJumpLenDist(), 0, (4, 3), None, "model",
            ["RPB1"], [(4, 1), (4, 2)], [0, 0],
@@ -136,21 +136,21 @@ def pipeline_5_spot_on_figure():
     PL.add(sf.fig.bar.WithModel(), 2, (4, 4), None, "fig",
            ["RPB1"], [(4, 1), (4, 3)], [2, 2],
            {"calc_cols": ["jump_dist", "prob"],
-            "model_cols": ["jump_dist", "prob"],
+           "model_cols": ["jump_dist", "prob"],
             "group_depth": 2, "group_depth_model": 2, "split_depth": 2})
     PL.add(sf.load.table.SingleCsv(), 0, (4, 5), None, "fig_param",
            ["RPB1"], [], [],
            {"path": path, "col_info": [
-            [1, "is_cdf", "int32", "num", "Whether histogram is CD"],
-            [2, "dt", "int32", "num", "Time difference of jump step"],
-            [0, "legend", "str", "none", "Legend string"],
-            [0, "marker_colors", "str", "none", "Edge and face colors"],
-            [0, "line_colors", "str", "none", "Line colors"]],
+               [1, "is_cdf", "int32", "num", "Whether histogram is CD"],
+               [2, "dt", "int32", "num", "Time difference of jump step"],
+               [0, "legend", "str", "none", "Legend string"],
+               [0, "marker_colors", "str", "none", "Edge and face colors"],
+               [0, "line_colors", "str", "none", "Line colors"]],
             "split_depth": 2})
     PL.add(sf.fig.style.ParamTable(), 0, (4, 6), None, "fig_style",
            ["RPB1"], [(4, 4), (4, 5)], [2, 2],
            {"size": [6, 2], "margin": [0.9, 0.6, 0.1, 0.1],
-            "label": ["Jump distance (\u03bcm)", "Probability"],
+           "label": ["Jump distance (\u03bcm)", "Probability"],
             "format": ["%.1f", "%.2f"],
             "limit": [-0.01, 0.85, -0.001, 0.05],
             "tick": [[0, 0.2, 0.4, 0.6, 0.8], [0, 0.02, 0.04]],
@@ -181,12 +181,12 @@ def pipeline_6_tramway():
     PL.add(sf.fig.style.Basic(), 0, (5, 4), None, "fig_style",
            ["RPB1"], [(5, 3)], [1],
            {"size": [4, 4], "margin": [0, 0, 0, 0], "is_box": True,
-            "limit": [-14, 14, -14, 14], "tick": [[-15, 15], [-15, 15]],
+           "limit": [-14, 14, -14, 14], "tick": [[-15, 15], [-15, 15]],
             "clim": [0, 0.06], "cmap": "coolwarm"})
     PL.add(sf.fig.figure.ToTiff(), 0, (5, 5), None, "fig_tif",
            ["RPB1"], [(5, 4)], [1],
            {"scalebar": [5, 0.05, 0.05, 2, [0, 0, 0]],
-            "dpi": 300, "split_depth": 0})
+           "dpi": 300, "split_depth": 0})
     PL.add(sf.img.montage.RGB(), 0, (5, 6), None, 'fig_mtg',
            ["RPB1"], [(5, 5)], [0],
            {"grid_shape": [1, 3], "padding_width": 0, "split_depth": 0})
@@ -212,10 +212,11 @@ def pipeline_7_flowchart():
     PL.make_flowchart("pipeline", "grp_ana", scale=(0.6, 1.8))
 
 
-pipeline_1_load()
-pipeline_2_tracking()
-pipeline_3_show_trajectory()
-pipeline_4_spot_on()
-pipeline_5_spot_on_figure()
-pipeline_6_tramway()
-pipeline_7_flowchart()
+if __name__ == '__main__':  # This line is needed if multiprocessing is used.
+    pipeline_1_load()
+    pipeline_2_tracking()
+    pipeline_3_show_trajectory()
+    pipeline_4_spot_on()
+    pipeline_5_spot_on_figure()
+    pipeline_6_tramway()
+    pipeline_7_flowchart()

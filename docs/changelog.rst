@@ -3,7 +3,7 @@ Changelog
 =============
 **Slitflow** follows major version zero (rapid development) of Semantic Versioning.
 
-0.1.1 (Not released)
+0.1.1 (2023-03-07)
 ====================
 
 Features
@@ -11,7 +11,8 @@ Features
 
 * Updated the documentation.
 * Added :class:`slitflow.img.noise.Gauss` class.
-* Added tests using pytest
+* Added tests using pytest.
+* Added example scripts.
 
 API changes
 --------------------
