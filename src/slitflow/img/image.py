@@ -37,6 +37,8 @@ class Image(Data):
     def save_data(self, stack, path):
         """Save :class:`numpy.ndarray` data into tiff file.
         """
+        if stack.size == 0:
+            return
         with tf.TiffWriter(path) as tif:
             for i in np.arange(0, stack.shape[0]):
                 tif.write(np.flipud(stack[i, :, :]),
@@ -53,11 +55,19 @@ class Image(Data):
         col_name = self.info.get_column_name(type="col")
         col_dict = self.info.get_column_type()
         stack = stack.astype(col_dict[col_name[0]])
-        lens = self.info.file_index().groupby("_split").size().values
-        # TODO: test
+        if stack.size == 0:
+            self.data = [stack]
+            return
+        file_index = self.info.file_index()
+        if "_file" not in file_index.columns:
+            lens = file_index.groupby(
+                ["_split"]).size().values
+        else:
+            lens = file_index.groupby(
+                ["_file", "_split"]).size().values
         if len(lens) == 0 or lens[0] == 0:
             starts = [0]
-            ends = [1]
+            ends = [stack.shape[0]]
         else:
             starts = np.delete(np.append(np.zeros(1), np.cumsum(lens)), -1)
             starts = starts.astype("int32").tolist()

@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 from ..tbl.table import Table
 from .. import setreqs
@@ -21,7 +22,7 @@ class Value(Table):
             from required table. If this param is not defined, index columns
             are copied.
         param["split_depth"] (int): File split depth number.
-        
+
     Returns:
         Table: Table containing mask value column
     """
@@ -75,6 +76,8 @@ class Value(Table):
         """
         df = reqs[0].copy()
         img = reqs[1].copy()
+        if img.shape[0] > 1:
+            raise Exception("Image must be split into single frames.")
         frm = img[0, :, :]
         x = df[param["calc_cols"][0]].values / param["pitch"]
         y = df[param["calc_cols"][1]].values / param["pitch"]
@@ -112,6 +115,11 @@ class BinaryImage(Table):
     Returns:
         Table: Table with rows located inside mask image
     """
+    _temp_index = []
+
+    def __init__(self, info_path=None):
+        super().__init__(info_path)
+        BinaryImage._temp_index = []
 
     def set_reqs(self, reqs, param):
         """Drop elements that exist only in one required data.
@@ -128,6 +136,9 @@ class BinaryImage(Table):
         self.info.add_param(
             "calc_cols", calc_cols, "list of str",
             "Columns for X,Y-coordinate")
+        index_cols = self.info.get_column_name("index")
+        self.info.add_param("index_cols", index_cols, "list of str",
+                            "Columns for index")
         self.info.set_split_depth(param["split_depth"])
 
     @staticmethod
@@ -159,5 +170,25 @@ class BinaryImage(Table):
             else:
                 vals.append(frm[y, x])
         df["mask_val"] = vals
+
+        df_index = df[param["index_cols"]].drop_duplicates()
+        if len(df_index) < len(df):
+            BinaryImage._temp_index.append(df_index)
+        else:
+            df_index = df[param["index_cols"] + ["mask_val"]]
+            BinaryImage._temp_index.append(df_index)
         df = df[df["mask_val"] > 0]
         return df.drop(["mask_val"], axis=1)
+
+    def set_index(self):
+        """Set the index based on the saved temporal index.
+
+        The file number should be added to the masked index not to skip the
+        file number that is not selected.
+
+        """
+        self.info.index = pd.concat(BinaryImage._temp_index)
+        self.info.set_index_file_no()
+        if "mask_val" in self.info.index.columns:
+            self.info.index = self.info.index[self.info.index["mask_val"] > 0]
+            self.info.index = self.info.index.drop(columns=["mask_val"])

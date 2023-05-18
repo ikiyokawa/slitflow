@@ -34,15 +34,22 @@ def from_data(Data):
         Data (Table): Table data containing result :class:`pandas.DataFrame`.
     """
     index_cols = Data.info.get_column_name("index")
-    index = pd.concat(Data.data)[index_cols].drop_duplicates()
-    Data.info.index = pd.concat([Data.info.index, index]).drop_duplicates()
-    Data.info.set_index_file_no()
+    if (len(index_cols) > 0) & (len(Data.data) > 0):
+        index = pd.concat(Data.data)[index_cols].drop_duplicates()
+        if len(Data.info.index) == 0:
+            Data.info.index = pd.DataFrame(columns=index_cols)
+        Data.info.index = pd.merge(
+            Data.info.index, index, on=index_cols, how="outer")
+        Data.info.set_index_file_no()
+    else:
+        # for split data with no data
+        Data.info.index = pd.DataFrame(columns=index_cols)
 
 
 def from_req_plus_data(Data, req_no):
     """Copy index from required data index and result pandas.DataFrame.
 
-    This function can only be used for 
+    This function can only be used for
     :class:`~slitflow.tbl.table.Table` objects. This function is not
     used in general classes.
 
@@ -60,15 +67,3 @@ def from_req_plus_data(Data, req_no):
     and_list = list(set(index_data) & set(index_req))
     index = pd.merge(index_data, index_req, on=and_list)
     Data.info.index = pd.concat([Data.info.index, index]).drop_duplicates()
-
-# Prepared but not used.
-# def and_2reqs(Data):
-#     """Drop index rows that exist only in one required data.
-
-#     Args:
-#         Data (Data): Result Data object containing required data.
-#     """
-#     index_0 = Data.reqs[0].info.index.drop(["_file", "_split"], axis=1)
-#     index_1 = Data.reqs[1].info.index.drop(["_file", "_split"], axis=1)
-#     index = pd.concat([index_0, index_1])
-#     Data.info.index = index[index.duplicated()]

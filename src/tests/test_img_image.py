@@ -38,7 +38,7 @@ def test_Image_set_info(Index):
     D2.set_reqs([D1])
     D2.set_info({"split_depth": 0})
     assert D2.info.get_param_names() ==\
-        ['calc_cols', 'index_counts', 'pitch',
+        ['calc_cols', 'index_counts', 'pitch', 'type',
          'img_size', 'length_unit', 'split_depth']
 
 

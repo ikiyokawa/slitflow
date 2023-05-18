@@ -40,8 +40,8 @@ class Table(Data):
             return
         if len(df) == 0:
             return  # see test_trj_filter
-        df = df_index.merge(df)
-        grouped = df.groupby("_split")
+        df = pd.merge(df, df_index, on=common_cols, how="left")
+        grouped = df.groupby(["_file", "_split"])
         self.data = list(list(zip(*grouped))[1])
         data = []
         for df in self.data:
@@ -71,7 +71,7 @@ def merge_different_index(self, req_no):
     """
     df_index = self.reqs[req_no].info.file_index()
     dfs = []
-    for i, (_, row) in enumerate(df_index.groupby("_split")):
+    for i, (_, row) in enumerate(df_index.groupby(["_file", "_split"])):
         row_index = row.drop_duplicates()\
             .drop(["_file", "_split"], axis=1).reset_index(drop=True)
         df = self.data[i]
@@ -91,7 +91,7 @@ def merge_overlap_index(self, req_no, on_col_name):
     """
     df_index = self.reqs[req_no].info.file_index()
     dfs = []
-    for i, (_, row) in enumerate(df_index.groupby("_split")):
+    for i, (_, row) in enumerate(df_index.groupby(["_file", "_split"])):
         row_index = row.drop_duplicates()\
             .drop(["_file", "_split"], axis=1).reset_index(drop=True)
         df = self.data[i]

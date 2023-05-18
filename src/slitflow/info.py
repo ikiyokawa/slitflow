@@ -119,7 +119,7 @@ class Info():
             self.index = pd.concat([self.index, df]).drop_duplicates()
             self.set_index_file_no()
 
-    def save_index(self):
+    def save_index(self, load_index=True):
         """Update index information file.
 
         The file size is reduced by excluding duplicate higher-level
@@ -139,7 +139,8 @@ class Info():
             an unrelated index file with the same name, it must be deleted.
 
         """
-        self.load_index()
+        if load_index:
+            self.load_index()
         index_path = self.path + "x"
         if "_split" in self.index.columns:
             self.index.drop(columns=["_split"], inplace=True)
@@ -167,8 +168,13 @@ class Info():
     def set_index_file_no(self):
         """Add file number column to the index table according to split depth.
         """
+        if "_file" in self.index.columns:
+            if not self.index['_file'].isna().any():
+                return
         index_names = self.get_column_name("index")
-        if self.split_depth() > 0:
+        if len(self.index) == 0:
+            return
+        elif self.split_depth() > 0:
             grouped = self.index.groupby(rl(index_names[:self.split_depth()]))
             dfs = list(list(zip(*grouped))[1])
             for i, df in enumerate(dfs):
@@ -209,6 +215,9 @@ class Info():
         """
         self.set_index_file_no()
         index = self.index.copy()
+        if len(index) == 0:
+            self.file_nos = [0]
+            return index
         if not hasattr(self, "file_nos"):
             self.set_file_nos(None)
         return index[index["_file"].isin(self.file_nos)]
@@ -249,11 +258,23 @@ class Info():
                 index = self.index.drop(["_split"], axis=1)
             else:
                 index = self.index
-            split = index[index_names[:split_depth]].drop_duplicates()\
-                .reset_index(drop=True)
-            split["_split"] = split.index
-            self.index = index.merge(split, on=index_names[:split_depth])
+            if "_file" not in self.index.columns:
+                index["_file"] = []
+            if len(index) == 0:
+                self.index = index
+                return  # if no data is selected.
+            grouped = index.groupby("_file")
+            dfs_split = []
+            for _, df_file in grouped:
+                df_split = df_file[index_names[:split_depth]].drop_duplicates()
+                df_split["_split"] = range(len(df_split))
+                dfs_split.append(df_split)
+            df_split = pd.concat(dfs_split)
+            self.index = index.merge(df_split, on=index_names[:split_depth])
+            self.index = self.index.reindex(
+                index_names + ["_file", "_split"], axis=1)
         else:
+            self.index["_file"] = 0
             self.index["_split"] = 0
 
     def get_dict(self):
