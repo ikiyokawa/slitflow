@@ -22,5 +22,4 @@ skills, and use results without installing the software.
    Examples <examples>
    Development <develop>
    About <about>
-   Changelog <changelog>
    API Reference <api/slitflow>

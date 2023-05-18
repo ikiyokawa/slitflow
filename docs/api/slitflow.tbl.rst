@@ -16,5 +16,6 @@ Submodules
    slitflow.tbl.create
    slitflow.tbl.filter
    slitflow.tbl.math
+   slitflow.tbl.proc
    slitflow.tbl.stat
    slitflow.tbl.table

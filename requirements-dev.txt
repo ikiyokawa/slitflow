@@ -1,3 +1,24 @@
+# Packages for basic usage
+numpy
+pandas
+matplotlib
+tifffile
+tqdm # progress bar
+psutil # memory usage
+opencv-python
+scipy
+scikit-learn
+scikit-image
+netgraph
+
+# Packages for advanced usage 
+scikit-posthocs
+trackpy
+openpyxl
+tramway
+git+https://gitlab.com/yumaitou/Spot-On-cli.git@py310
+
+# Packages for development
 flake8
 autopep8
 pytest

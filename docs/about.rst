@@ -9,7 +9,12 @@ About
 Citation
 ==================
 
-In preparation.
+If **Slitflow** was useful for your research, please consider citing our `preprint <https://www.biorxiv.org/content/10.1101/2023.03.01.530718v1>`_ as follows:
+
+.. code-block:: text
+    
+    Ito Y, Hirose M, Tokunaga M. Slitflow: a Python framework for single-molecule dynamics and localization analysis. bioRxiv https://2023.03.01.530718 (2023).
+
 
 Environments
 ==================
@@ -20,7 +25,6 @@ Environments
 * Windows11 
 * macOS Ventura 13
 * Ubuntu 22.04.1
-* Debian 11
 
 Dependencies
 ==================
@@ -72,3 +76,64 @@ License
    CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
    OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
    OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Changelog
+=============
+**Slitflow** follows major version zero (rapid development) of Semantic Versioning.
+
+0.1.2 (Not released)
+----------------------
+
+Features
+  * Added :class:`slitflow.tbl.proc.SelectParam` class.
+  * Added :class:`slitflow.img.proc.SelectParam` class.
+  * Added :class:`slitflow.img.create.CheckerBoard` class.
+  * Updated requirements.
+
+API changes
+  * Changed :class:`slitflow.img.create.Black` class parameters.
+
+Bug fixes
+    * Fixed bug related to :class:`slitflow.img.proc.SelectParam` class. See "Add SelectParam and fix related bugs" commit.
+
+----
+
+0.1.1 (2023-03-07)
+----------------------
+
+Features
+  * Updated the documentation.
+  * Added :class:`slitflow.img.noise.Gauss` class.
+  * Added tests using pytest.
+  * Added example scripts.
+
+API changes
+  * Changed to Python <3.11 due to dependency on scikit-image.
+
+Bug fixes
+  * Fixed bug in :class:`~slitflow.fig.figure.ToTiff` raising ValueError related
+    to matplotlib.Figure.canvas.draw on macOS backend.
+  * Fixed bug in :class:`~slitflow.manager.Pipeline.set_grp_name` related to
+    loading CSV files.
+  * Fixed bug related to splitting depth in figure classes.
+  * Fixed bug in :class:`~slitflow.img.image.Image` splitting data inappropriately.
+
+Identified issues
+  * Bug in the drawing figure, probably caused by matplotlib figure refresh.
+  * :class:`slitflow.img.plot.Gauss2D` requires specific split depth of reqs data.
+
+----
+
+0.1.0 (2023-02-02)
+----------------------
+
+Features
+  * Added basic functionality.
+
+----
+
+0.0.1 (2022-10-29)
+----------------------
+
+Features
+  * Added test code.

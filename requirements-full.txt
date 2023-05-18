@@ -1,15 +1,19 @@
-scikit-posthocs
-seaborn
-fast-histogram
-trackpy
-tensorflow
-pims_nd2
-openpyxl
-munkres # trj.laptrack.LapLink
-umap-learn
+# Packages for basic usage
+numpy
+pandas<2.0.0
+matplotlib
+tifffile
+tqdm # progress bar
+psutil # memory usage
+opencv-python
+scipy
+scikit-learn
+scikit-image
+netgraph
 
+# Packages for advanced usage 
+scikit-posthocs
+trackpy
+openpyxl
 tramway
-polytope
-cvxopt
-stopit
 git+https://gitlab.com/yumaitou/Spot-On-cli.git@py310

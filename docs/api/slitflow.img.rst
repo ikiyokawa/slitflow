@@ -20,3 +20,4 @@ Submodules
    slitflow.img.montage
    slitflow.img.noise
    slitflow.img.plot
+   slitflow.img.proc
