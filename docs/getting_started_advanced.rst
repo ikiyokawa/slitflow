@@ -49,7 +49,7 @@ using one of the provided pip commands.
 .. code-block:: bash
 
     # If you want to install all the packages at once
-    pip install slitflow[full]
+    pip install slitflow[full] git+https://gitlab.com/yumaitou/Spot-On-cli.git@py310
 
     # If you downloaded requirements-full.txt from the slitflow repository
     pip install -r requirements-full.txt
@@ -70,7 +70,7 @@ using one of the provided pip commands.
       environments. Please install the appropriate version from the `microsoft website 
       <https://www.microsoft.com/en-US/download/details.aspx?id=26368>`_ for your PC.
 
-3. Downloading data and making a directory
+1. Downloading data and making a directory
 -----------------------------------------------
 To download image data of single-molecule movies (142 MB), get the zip file
 from `zenodo <https://zenodo.org/record/7645485#.Y-3tqB_P2Ht>`_.
