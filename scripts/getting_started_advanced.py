@@ -1,49 +1,81 @@
+""" 
+=============== CAUTION =======================================================
+
+Run "pip install -r requirements-full.txt" before running this script.
+
+===============================================================================
+"""
+
 import os
+import urllib.request
+import zipfile
+import io
 
 import slitflow as sf
 
 
+root_dir = "slitflow_tutorial"
+project_dir = os.path.join(root_dir, "getting_started_advanced")
+data_root_dir = os.path.join(root_dir, "data")
+data_dir = os.path.join(data_root_dir, "getting_started_advanced")
+
+# Create directories
+if not os.path.isdir(root_dir):
+    os.makedirs(root_dir)
+if not os.path.isdir(project_dir):
+    os.makedirs(project_dir)
+if not os.path.isdir(data_root_dir):
+    os.makedirs(data_root_dir)
+if not os.path.isdir(data_dir):
+    os.makedirs(data_dir)
+
+
+def preparation_download_movies():
+    # Download single-molecule movies
+
+    file_url = 'https://zenodo.org/record/7645485/files/getting_started_advanced.zip'
+
+    opener = urllib.request.build_opener()
+
+    # If you are in proxy environment, uncomment the following lines.
+    # proxy_handler = urllib.request.ProxyHandler({
+    #     'https': 'your_proxy_url:port'})
+    # opener = urllib.request.build_opener(proxy_handler)
+
+    print("Downloading single-molecule movies. This may take tens of minutes.")
+    with opener.open(file_url) as download_file:
+        with zipfile.ZipFile(io.BytesIO(download_file.read())) as zip_file:
+            zip_file.extractall(data_root_dir)
+    print("Download completed.")
+
+
 def pipeline_1_load():
 
-    # make a project directory (in the user directory)
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_advanced")
-    if not os.path.isdir(prj_dir):
-        os.makedirs(prj_dir)
-    print(prj_dir)
-
-    PL = sf.manager.Pipeline(prj_dir)
-
-    # path to downloaded image data directory
-    raw_dir = os.path.join(
-        os.path.expanduser("~"), "slitflow", "data",
-        "getting_started_advanced")
+    PL = sf.manager.Pipeline(project_dir)
 
     pitch = 0.0710837445886793  # [um/pix]
     interval = 0.03333  # [s]
 
     for i in [1, 2, 3]:
-        path = os.path.join(raw_dir, "rpb1", "rpb1-" + str(i) + ".tif")
+        path = os.path.join(data_dir, "rpb1", "rpb1-" + str(i) + ".tif")
         PL.add(sf.load.tif.SplitFile(), 0, (1, 1), "rpb1", "raw",
                ["RPB1"], [], [],
                {"path": path, "length_unit": "um", "pitch": pitch,
                 "interval": interval, "value_type": "uint8", "indexes": [i],
                 "split_depth": 1})
 
-    path = os.path.join(raw_dir, "mask", "mask.tif")
+    path = os.path.join(data_dir, "mask", "mask.tif")
     PL.add(sf.load.tif.SingleFile(), 0, (2, 1), "mask", "raw",
            ["RPB1"], [], [],
            {"path": path, "length_unit": "um", "pitch": pitch,
-            "value_type": "uint8", "split_depth": 0})
+            "value_type": "uint8", "split_depth": 1})
     PL.save("pipeline_1_load")
     PL.run()
 
 
 def pipeline_2_tracking():
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_advanced")
 
-    PL = sf.manager.Pipeline(prj_dir)
+    PL = sf.manager.Pipeline(project_dir)
 
     PL.add(sf.img.filter.DifferenceOfGaussian(), 3, (1, 2), None, "dog",
            ["RPB1"], [(1, 1)], [2],
@@ -73,10 +105,8 @@ def pipeline_2_tracking():
 
 
 def pipeline_3_show_trajectory():
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_advanced")
 
-    PL = sf.manager.Pipeline(prj_dir)
+    PL = sf.manager.Pipeline(project_dir)
 
     PL.add(sf.fig.line.Simple(), 2, (3, 1), "show", "fig",
            ["RPB1"], [(1, 10)], [1],
@@ -99,10 +129,8 @@ def pipeline_3_show_trajectory():
 
 
 def pipeline_4_spot_on():
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_advanced")
 
-    PL = sf.manager.Pipeline(prj_dir)
+    PL = sf.manager.Pipeline(project_dir)
 
     PL.add(sf.trj.wfastspt.JumpLenDist(), 0, (4, 1), "spoton", "hist",
            ["RPB1"], [(1, 9)], [0],
@@ -122,15 +150,10 @@ def pipeline_4_spot_on():
 
 
 def pipeline_5_spot_on_figure():
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_advanced")
-
-    PL = sf.manager.Pipeline(prj_dir)
+    PL = sf.manager.Pipeline(project_dir)
 
     # path to figure style table
-    raw_dir = os.path.join(os.path.expanduser("~"), "slitflow", "data",
-                           "getting_started_advanced")
-    path = os.path.join(raw_dir, "param", "spoton_fig.csv")
+    path = os.path.join(data_dir, "param", "spoton_fig.csv")
 
     # all required Data should be split into fig unit.
     PL.add(sf.fig.bar.WithModel(), 2, (4, 4), None, "fig",
@@ -167,9 +190,7 @@ def pipeline_5_spot_on_figure():
 
 def pipeline_6_tramway():
 
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_advanced")
-    PL = sf.manager.Pipeline(prj_dir)
+    PL = sf.manager.Pipeline(project_dir)
 
     PL.add(sf.trj.wtramway.Tessellation(), 1, (5, 1), "tram", "tess",
            ["RPB1"], [(1, 10)], [1], {"method": "gwr", "split_depth": 1})
@@ -201,9 +222,8 @@ def pipeline_6_tramway():
 
 
 def pipeline_7_flowchart():
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_advanced")
-    PL = sf.manager.Pipeline(prj_dir)
+
+    PL = sf.manager.Pipeline(project_dir)
 
     PL.load(["pipeline_1_load", "pipeline_2_tracking",
              "pipeline_3_show_trajectory", "pipeline_4_spot_on",
@@ -212,7 +232,11 @@ def pipeline_7_flowchart():
     PL.make_flowchart("pipeline", "grp_ana", scale=(0.6, 1.8))
 
 
-if __name__ == '__main__':  # This line is needed if multiprocessing is used.
+if __name__ == '__main__':
+    # Script must be written inside the "if __name__ == '__main__'"part
+    # when using multiprocessing.
+
+    preparation_download_movies()
     pipeline_1_load()
     pipeline_2_tracking()
     pipeline_3_show_trajectory()

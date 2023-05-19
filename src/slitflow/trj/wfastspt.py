@@ -707,6 +707,7 @@ class ModelJumpLenDist(Table):
 
         df = to_model_hist_df(HistVec, y)
         df["is_cdf"] = int(not param["show_pdf"])
+        df = df[df_hist.columns]
         return df
 
 

@@ -81,20 +81,22 @@ Changelog
 =============
 **Slitflow** follows major version zero (rapid development) of Semantic Versioning.
 
-0.1.2 (Not released)
+0.1.2 (2023-05-19)
 ----------------------
 
 Features
+  * Updated getting started for Gitpod and Colab.
+  * Updated requirements.
   * Added :class:`slitflow.tbl.proc.SelectParam` class.
   * Added :class:`slitflow.img.proc.SelectParam` class.
   * Added :class:`slitflow.img.create.CheckerBoard` class.
-  * Updated requirements.
 
 API changes
   * Changed :class:`slitflow.img.create.Black` class parameters.
 
 Bug fixes
     * Fixed bug related to :class:`slitflow.img.proc.SelectParam` class. See "Add SelectParam and fix related bugs" commit.
+    * Fixed bug in :class:`~slitflow.trj.wfastspt.ModelJumpLenDist` creating table indices inappropriately. 
 
 ----
 

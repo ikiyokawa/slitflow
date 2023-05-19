@@ -1,19 +1,88 @@
 Basic usage
 =======================
-This short example of **Slitflow** usage enables us to overview **Slitflow**
-by analyzing the trajectories of simulated random walks.
+This example provides an minimal overview of Slitflow by analyzing the
+trajectories of simulated random walks.
 
-Installation
+1. Installation
 ----------------
-**Slitflow** can be installed from `PyPI <https://pypi.org/project/slitflow/>`_.
+You can run the example in the cloud using `Gitpod <https://www.gitpod.io/>`_
+or `Google Colaboratory <https://colab.research.google.com/>`_ in your web
+browser without installing Slitflow on your computer.
 
-.. code-block:: console
+You can also run the example on your local Windows, Linux, or Mac computer by
+executing the Python script or using Jupyter notebook after installing
+Slitflow.
 
-   pip install slitflow
+In the cloud
+^^^^^^^^^^^^^^
+If you have a Google account, you can run the example in 
+`Google Colaboratory <https://colab.research.google.com/>`_.
+Click the following badge to launch the Jupyter notebook.
 
-This command will install minimal dependencies for basic usage. Some analysis
-class requires additional packages. To install all required packages,
-see also the detailed :ref:`installation guide <develop:Installation>`.
+.. image:: https://colab.research.google.com/assets/colab-badge.svg
+   :target: https://colab.research.google.com/github/yumaitou/slitflow/blob/main/scripts/notebook/getting_started_basic.ipynb
+
+If you have a GitHub account, you can run the example in Gitpod.
+Follow these steps (some may be skipped if you've run it before):
+
+1) Open the `slitflow repository <https://gitpod.io/#https://github.com/yumaitou/slitflow>`_ on Gitpod.
+2) Click ``Continue with GitHub`` and sign in to authorize Gitpod.
+3) On the ``New Workspace`` page, click ``Continue``.
+4) The environment will be set up automatically, and the VS Code editor will launch.
+5) Open the file ``scripts/getting_started_basic.py`` and click the ``Run Python File``
+   button located at the top right of the editor.
+
+Windows 10/11
+^^^^^^^^^^^^^^^^
+Install Slitflow locally by following these steps using virtual environment and pip:
+
+1) Install the latest Python 3.8, 3.9 or 3.10 from `Python.org <https://www.python.org/downloads/windows/>`_.
+2) Create a virtual environment using `venv <https://docs.python.org/3/library/venv.html>`_.
+3) Activate the virtual environment and run ``pip install slitflow`` to install the minimal functionality of Slitflow.
+4) Download the example `Python script <https://github.com/yumaitou/slitflow/blob/main/scripts/getting_started_basic.py>`_ and execute it. 
+
+macOS 
+^^^^^^
+The following steps are tested on macOS Ventura 13. Installing ``ttf-mscorefonts-installer``
+is recommended to reproduce the figures.
+
+1) Install the latest Python 3.8, 3.9 or 3.10 using pyenv.
+2) Create virtual environment using pyenv-virtualenv.
+3) After activating the virtual environment, execute the ``pip install slitflow`` command to
+   install the minimal functionality of Slitflow.
+4) Download the example `Python script <https://github.com/yumaitou/slitflow/blob/main/scripts/getting_started_basic.py>`_ and execute it. 
+
+Linux
+^^^^^^
+The following steps are tested on Ubuntu 22.04.1.
+
+1) Install the latest Python 3.8, 3.9 or 3.10 using pyenv.
+2) Create virtual environment using pyenv-virtualenv.
+3) After activating the virtual environment, execute the ``pip install slitflow`` command to
+   install the minimal functionality of Slitflow.
+4) Download the example `Python script <https://github.com/yumaitou/slitflow/blob/main/scripts/getting_started_basic.py>`_ and execute it. 
+
+2. Preparing tutorial directory
+---------------------------------
+In the latter part of the Basic tutorial (3.4), the results of each analysis
+step are stored in the project directory. To create the project directory in
+your workspace, follow these steps.
+
+.. code-block:: python 
+
+    import os
+    
+    root_dir = "slitflow_tutorial"
+    project_dir = os.path.join(root_dir, "getting_started_basic")
+
+    # Create directories
+    if not os.path.isdir(root_dir):
+        os.makedirs(root_dir)
+    if not os.path.isdir(project_dir):
+        os.makedirs(project_dir)
+
+3. Running the example
+------------------------
 
 We usually import slitflow as follows:
 
@@ -21,8 +90,9 @@ We usually import slitflow as follows:
 
    import slitflow as sf
 
-Simulate random walks
-------------------------
+3.1. Simulate random walks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 Start by creating an Index object that defines the number of images and 
 trajectories. Then we execute the ``run()`` method to make result data inside
 the Index object.
@@ -62,8 +132,9 @@ See also :class:`slitflow.trj.random.Walk2DCenter` for argument descriptions.
    # 34       2       3       5 -0.218346  0.373677
    # 35       2       3       6 -0.247888  0.498855
 
-Calculate the Mean Square Displacement
---------------------------------------
+3.2. Calculate the Mean Square Displacement
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 The following code calculates the MSD of each trajectory. Then MSDs are
 averaged through all images.
 
@@ -85,13 +156,24 @@ See also :class:`slitflow.trj.msd.Each` and :class:`slitflow.tbl.stat.Mean`.
    # 4       0.4  0.138391  0.066066  0.026971      6  0.830347
    # 5       0.5  0.153488  0.112978  0.046123      6  0.920926
 
+3.3. Make a figure image
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Make a figure image
------------------------------
 Then plot the averaged MSD against the time interval. The graph style is
 adjusted using style class and creates a figure tiff image.
 
 See also :class:`slitflow.fig.line.Simple`, :class:`slitflow.fig.style.Basic` and :class:`slitflow.fig.figure.ToTiff`
+
+.. note::
+    
+    By default, Slitflow disables the display of figures in a separate window
+    using Matplotlib. If your environment allows a separate window display,
+    include the following snippets in your Python script after importing slitflow.
+
+    .. code-block:: python
+
+        import matplotlib
+        matplotlib.use('TkAgg')
 
 .. code-block:: python
 
@@ -112,29 +194,18 @@ See also :class:`slitflow.fig.line.Simple`, :class:`slitflow.fig.style.Basic` an
       plt.axis("off")
       plt.show()
 
-
 .. image:: ./img/getting_started_basic_Sample1_msd_img.png
    :width: 50%
 
+3.4. Run using a pipeline
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Run using pipeline
------------------------------
 The Pipeline class can perform all the above steps while saving data to a
 project folder.
 
-
 .. code-block:: python
 
-      import os
-
-      # make a project directory (in the user directory)
-      prj_dir = os.path.join(os.path.expanduser("~"),"slitflow","tutorial_pipeline")
-      if not os.path.isdir(prj_dir):
-         os.makedirs(prj_dir)
-      print(prj_dir)
-
-      # make and run a pipeline
-      PL = sf.manager.Pipeline(prj_dir)
+      PL = sf.manager.Pipeline(project_dir)
       obs_names = ["Sample1"]
       PL.add(sf.tbl.create.Index(), 0, (1, 1), 'channel1', 'index', 
             obs_names, [], [],
@@ -165,7 +236,7 @@ This code creates the following folder structure.
 
 .. code-block:: bash
 
-      tutorial_pipeline
+    slitflow_tutorial/getting_started_basic
        |--g0_config
        |    pipeline.csv
        |--g1_groupe1

@@ -1,13 +1,15 @@
 import io
 
 import numpy as np
-import matplotlib
-matplotlib.use("TKAgg")
-import matplotlib.pyplot as plt
 import cv2
+import matplotlib
+import matplotlib.pyplot as plt
 
-from ..data import Pickle
 from ..img.image import RGB
+from ..data import Pickle
+from .. import MATPLOTLIB_BACKEND
+
+matplotlib.use(MATPLOTLIB_BACKEND)
 
 
 class Figure(Pickle):

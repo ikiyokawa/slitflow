@@ -1,9 +1,24 @@
+import os
+
 import matplotlib.pyplot as plt
 
 import slitflow as sf
 
-if __name__ == '__main__':  # This line is needed if multiprocessing is used.
+root_dir = "slitflow_tutorial"
+project_dir = os.path.join(root_dir, "getting_started_basic")
 
+# Create directories
+if not os.path.isdir(root_dir):
+    os.makedirs(root_dir)
+if not os.path.isdir(project_dir):
+    os.makedirs(project_dir)
+
+if __name__ == '__main__':
+    # Script must be written inside the "if __name__ == '__main__'"part
+    # when using multiprocessing. We recommend always using this structure.
+
+    # === Run using data objects ===
+    # Simulate random walks
     D1 = sf.tbl.create.Index()
     D1.run([], {"type": "trajectory", "index_counts": [2, 3],
                 "split_depth": 0})
@@ -14,6 +29,7 @@ if __name__ == '__main__':  # This line is needed if multiprocessing is used.
                   "length_unit": "um", "seed": 1, "split_depth": 0})
     print(D2.data[0])
 
+    # Calculate the Mean Square Displacement
     D3 = sf.trj.msd.Each()
     D3.run([D2], {"group_depth": 2, "split_depth": 0})
 
@@ -22,6 +38,7 @@ if __name__ == '__main__':  # This line is needed if multiprocessing is used.
            "interval"], "split_depth": 0})
     print(D4.data[0])
 
+    # Make a figure image
     D5 = sf.fig.line.Simple()
     D5.run([D4], {"calc_cols": ["interval", "msd"], "err_col": "sem",
                   "group_depth": 0, "split_depth": 0})
@@ -36,21 +53,22 @@ if __name__ == '__main__':  # This line is needed if multiprocessing is used.
     D7 = sf.fig.figure.ToTiff()
     D7.run([D6], {"split_depth": 0})
 
+    # The following four lines do not work in GUI-disabled environments like
+    # Gitpod and Google Colaboratory.
+    # If your environment allows separate window display, uncomment below.
+
+    # import matplotlib
+    # matplotlib.use('TkAgg')
+
     plt.close()
     plt.imshow(D7.to_imshow(0))
     plt.axis("off")
     plt.show()
 
-    import os
-    # make a project directory (in the user directory)
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "getting_started_basic")
-    if not os.path.isdir(prj_dir):
-        os.makedirs(prj_dir)
-    print(prj_dir)
+    # === Run using a pipeline ===
 
     # make and run a pipeline
-    PL = sf.manager.Pipeline(prj_dir)
+    PL = sf.manager.Pipeline(project_dir)
     obs_names = ["Sample1"]
     PL.add(sf.tbl.create.Index(), 0, (1, 1), 'channel1', 'index',
            obs_names, [], [],

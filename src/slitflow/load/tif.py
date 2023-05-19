@@ -13,7 +13,7 @@ class SingleFile(Image):
         param["path"] (str): Path to a tiff file.
         param["length_unit"] (str): String of length unit such as "um",
             "nm", "pix". This string is used as column name footers and units.
-        param["pitch"] (float): Pixel size in length_unit/pix.
+        param["pitch"] (float, optional): Pixel size in length_unit/pix.
         param["interval"] (float, optional): Time interval.
         param["index_cols"] (list of list, optional): Column names of indexes.
             Each list should have [depth number, column name, description].
@@ -60,9 +60,10 @@ class SingleFile(Image):
             0, "intensity", param["value_type"], "a.u.", "Pixel intensity")
         self.info.add_param(
             "length_unit", param["length_unit"], "str", "Unit of length")
-        self.info.add_param(
-            "pitch", param["pitch"], param["length_unit"] + "/pix",
-            "Length per pixel")
+        if "pitch" in param:
+            self.info.add_param(
+                "pitch", param["pitch"], param["length_unit"] + "/pix",
+                "Length per pixel")
         self.info.add_param(
             "img_size", [int(load_param["ImgWidth"]), int(
                 load_param["ImgHeight"])], "pix", "[width, height] of image")
