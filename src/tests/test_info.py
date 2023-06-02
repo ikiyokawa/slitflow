@@ -33,12 +33,12 @@ def test_Info(tmpdir):
            and "Path: " + os.path.join(
                tmpdir, "g1_grp", "a1_ana", "test_grp_ana.sf") in print_text
 
-    to_string = D.info.to_string()
-    assert to_string.find('"meta": {') == 781
+    to_json = D.info.to_json()
+    assert to_json.find('"meta": {') == 781
 
     D.info.meta = {}
-    to_string = D.info.to_string()
-    assert to_string.find('"meta": {') == 781
+    to_json = D.info.to_json()
+    assert to_json.find('"meta": {') == 781
 
 
 def test_Info_set_path(tmpdir):

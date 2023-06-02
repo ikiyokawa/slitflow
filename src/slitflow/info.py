@@ -684,7 +684,7 @@ class Info():
                 "datetime": now, "path": self.path, "reqs": reqs_dict}
         self.meta = dict
 
-    def to_string(self):
+    def to_json(self):
         """Returns a string representation of info file to export.
 
         .. caution::

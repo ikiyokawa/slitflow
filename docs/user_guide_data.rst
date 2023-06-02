@@ -105,7 +105,7 @@ walk calculation Data object.
 
 .. code-block:: python
 
-   print(D2.info.to_string())  # output is truncated
+   print(D2.info.to_json())  # output is truncated
    # {"column": [
    #    {"depth": 1, "name": "img_no", "type": "int32",
    #     "unit": "num", "description": "Image number"}, ... ],

@@ -81,6 +81,14 @@ Changelog
 =============
 **Slitflow** follows major version zero (rapid development) of Semantic Versioning.
 
+0.1.3 (2023-06-02)
+----------------------
+
+API changes
+  * Renamed ``slitflow.info.Info.to_string()`` to :meth:`slitflow.info.Info.to_json`.
+
+----
+
 0.1.2 (2023-05-19)
 ----------------------
 
