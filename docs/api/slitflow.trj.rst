@@ -15,6 +15,7 @@ Submodules
    slitflow.trj.filter
    slitflow.trj.msd
    slitflow.trj.random
+   slitflow.trj.subtrj
    slitflow.trj.wfastspt
    slitflow.trj.wtrackpy
    slitflow.trj.wtramway

@@ -81,6 +81,14 @@ Changelog
 =============
 **Slitflow** follows major version zero (rapid development) of Semantic Versioning.
 
+0.1.4 (Unreleased)
+----------------------
+
+Features
+  * Added :class:`slitflow.trj.subtrj.Subtrajectory` class.
+
+----
+
 0.1.3 (2023-06-02)
 ----------------------
 
