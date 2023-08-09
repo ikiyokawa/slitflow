@@ -24,52 +24,33 @@ class SortCols(Table):
         """Copy info from reqs[0] and change depths.
         """
         self.info.copy_req(0)
-        index_cols = self.info.get_column_name("index")
-        if len(index_cols) != len(param["new_depths"]):
-            raise Exception(
-                "The number of new depths must be equal to the number\
-                    of index columns in the table.")
-        for depth, name in zip(param["new_depths"], index_cols):
+        all_cols = self.info.get_column_name("all")
+        new_depths = param["new_depths"]
+        if len(all_cols) > len(new_depths):
+            new_depths = new_depths + [0] * (len(all_cols) - len(new_depths))
+        for depth, name in zip(new_depths, all_cols):
             self.info.reset_depth(name, depth=depth)
         self.info.sort_column()
         self.info.sort_index()
-        self.info.add_param("new_depths", param["new_depths"], "list of int",
-                            "Target depth of index")
+        self.info.add_param(
+            "new_cols", self.info.get_column_name("all"), "list of int",
+            "Target depth of index")
         self.info.set_split_depth(param["split_depth"])
 
     @staticmethod
     def process(reqs, param):
-        """Change column depths and sort values.
-
-        If you want to change from ["img_no", "trj_no", "frm_no"] to
-        ["frm_no", "img_no", "trj_no"], set new_depths = [2,3,1].
+        """Sort values of the table by column names.
 
         Args:
             reqs[0] (pandas.DataFrame): Table for sorting.
-            param["new_depths"] (list of int): Target depth number of indexes.
-                If list length < total columns, remaining columns are assumed
-                as depth=0.
+            param["new_cols"] (list of str): Sorted column names.
 
         Returns:
             pandas.DataFrame: Sorted table
         """
         df = reqs[0].copy()
-        index_cols = list(df.columns[:len(param["new_depths"])])
-        cols = df.columns[len(index_cols):]
-        new_cols = []
-        sorted_depth = sorted(set(param["new_depths"]))  # list
-        if sorted_depth[0] == 0:  # This might have bug
-            sorted_depth = sorted_depth[1:] + [0]
-
-        for i in sorted_depth:
-            for j, depth in enumerate(param["new_depths"]):
-                if i == depth:
-                    new_cols.append(index_cols[j])
-        if len(cols) > 0:
-            df = df[new_cols + list(cols)]
-        else:
-            df = df[new_cols]
-        df = df.sort_values(new_cols).reset_index(drop=True)
+        df = df[param["new_cols"]]
+        df = df.sort_values(param["new_cols"]).reset_index(drop=True)
         return df
 
 

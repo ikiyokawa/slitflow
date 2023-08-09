@@ -13,21 +13,15 @@ def Index():
 
 
 def test_SortCols(Index):
-    D = sf.tbl.convert.SortCols()
-    D.run([Index], {"new_depths": [2, 1], "split_depth": 0})
-    assert D.data[0].equals(pd.DataFrame({"trj_no": [1], "img_no": [1]}))
-
-    del D
-    D = sf.tbl.convert.SortCols()
-    D.run([Index], {"new_depths": [0, 1], "split_depth": 0})
-    assert D.data[0].equals(pd.DataFrame({"trj_no": [1], "img_no": [1]}))
-
-    del D
-    D = sf.tbl.convert.SortCols()
-    with pytest.raises(Exception) as e:
-        D.run([Index], {"new_depths": [0, 1, 1], "split_depth": 0})
-    assert e.match("The number of new depths must be equal to the number\
-                    of index columns in the table.")
+    D1 = sf.tbl.convert.SortCols()
+    D1.run([Index], {"new_depths": [2, 1], "split_depth": 0})
+    assert D1.data[0].equals(pd.DataFrame({"trj_no": [1], "img_no": [1]}))
+    D2 = sf.tbl.convert.SortCols()
+    D2.run([D1], {"new_depths": [0, 1], "split_depth": 0})
+    assert D2.data[0].equals(pd.DataFrame({"img_no": [1], "trj_no": [1]}))
+    D3 = sf.tbl.convert.SortCols()
+    D3.run([D2], {"new_depths": [2, 1], "split_depth": 0})
+    assert D3.data[0].equals(pd.DataFrame({"trj_no": [1], "img_no": [1]}))
 
 
 def test_AddColumn():

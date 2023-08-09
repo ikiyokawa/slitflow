@@ -87,6 +87,9 @@ Changelog
 Features
   * Added :class:`slitflow.trj.subtrj.Subtrajectory` class.
 
+API changes
+  * Updated :class:`slitflow.tbl.convert.SortCols` to be able to sort all columns, resulting in a change in the process parameters.   
+
 ----
 
 0.1.3 (2023-06-02)
