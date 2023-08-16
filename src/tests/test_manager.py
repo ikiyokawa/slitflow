@@ -272,6 +272,13 @@ def test_Pipeline_Delete(tmpdir):
     assert set(os.listdir(os.path.join(tmpdir, "g1_trj", "a1_index"))) ==\
         {'Test2_trj_index.sf'}
 
+    PL.add(sf.tbl.create.Index(), 0, (1, 2), "trj", "index",
+           ["Test1"], None, None,
+           {"index_counts": [1, 1], "type": "trajectory", "split_depth": 0})
+    PL.add("Delete()", 0, None, None, "index",
+           ["Test1"], [(1, 2)], [0], {})
+    assert not os.path.exists(os.path.join(tmpdir, "g1_trj", "a2_index"))
+
 
 def test_Pipeline_Copy(tmpdir):
 

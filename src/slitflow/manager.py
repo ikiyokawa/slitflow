@@ -590,7 +590,7 @@ class Pipeline():
 
         """
         if "keep" not in param:
-            param = {"keep": None}
+            param = {"keep": "none"}
         for req_address in reqs_address:
             for obs_name in obs_names:
                 info_path = ipath(
@@ -599,21 +599,19 @@ class Pipeline():
                     req_class_name = nm.get_class_name(info_path)
                     R = eval(req_class_name)
                     R.info.load(info_path)
-                    for data_path in nm.load_data_paths(R.info):
+                    for data_path in nm.load_data_paths(R.info, R.EXT):
                         if os.path.exists(data_path):
                             os.remove(data_path)
-                    if param["keep"] == "info":
-                        pass
-                    elif param["keep"] == "folder":
+                    if os.path.exists(info_path + "x"):
+                        os.remove(info_path + "x")
+                    if param["keep"] in ["folder", "none"]:
                         if os.path.exists(info_path):
                             os.remove(info_path)
-                    else:
-                        if os.path.exists(info_path):
-                            os.remove(info_path)
+                    if param["keep"] == "none":
                         try:
                             os.rmdir(os.path.dirname(info_path))
                         except OSError as e:
-                            pass
+                            pass  # existing other files
 
     def run_copy(self, address, ana_name, grp_name, reqs_address, obs_names,
                  param):
@@ -655,7 +653,7 @@ class Pipeline():
 
         R = eval(src_class_name)
         R.info.load(src_info_path)
-        for src_data_path in nm.load_data_paths(R.info):
+        for src_data_path in nm.load_data_paths(R.info, R.EXT):
             src_data_name = os.path.basename(src_data_path)
             # change data file name
             new_data_name = src_data_name.replace(

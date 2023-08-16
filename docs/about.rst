@@ -97,6 +97,9 @@ Documentation
   * Improved API documentation.
   * Added pdf and epub documentation.
 
+Bug fixes
+  * Deleted the incorrect default argument of :func:`slitflow.name.load_data_paths`.
+
 ----
 
 0.1.3 (2023-06-02)

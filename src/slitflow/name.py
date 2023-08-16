@@ -102,7 +102,7 @@ def make_data_paths(Info, ext):
     return natural_sort(data_paths)
 
 
-def load_data_paths(Info, ext=".*[!.sf]"):
+def load_data_paths(Info, ext):
     """Find saved data and create the path list.
 
     Args:
