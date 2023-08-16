@@ -40,10 +40,9 @@ Please see ["Getting Started Basic"](https://slitflow.readthedocs.io/en/latest/g
 ![pipeline](docs/img/getting_started_advance_pipeline.png)
 
 ## Citing
-If **Slitflow** was useful for your research, please consider citing our [preprint](https://www.biorxiv.org/content/10.1101/2023.03.01.530718v1) as follows:
+If **Slitflow** was useful for your research, please consider citing the following our paper:
 
-```
-Ito Y, Hirose M, Tokunaga M. Slitflow: a Python framework for single-molecule dynamics and localization analysis. bioRxiv https://2023.03.01.530718 (2023).
+* Ito, Y., Hirose, M., and Tokunaga, M. (2023). Slitflow: A Python framework for single-molecule dynamics and localization analysis. SoftwareX 23, 101462. [10.1016/j.softx.2023.101462](https://doi.org/10.1016/j.softx.2023.101462) 
 ```
 
 ## Contributing
