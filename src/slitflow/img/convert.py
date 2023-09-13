@@ -18,8 +18,8 @@ class Obs2Depth(Image):
         reqs (list of Image): Images for merge.
         param["col_name"] (str, optional): New column name for observation
             numbers. Defaults to "obs_no".
-        param["col_description"] (str): New column description. Defaults to
-            "Observation number".
+        param["col_description"] (str, optional): New column description.
+            Defaults to "Observation number".
         param["obs_name"] (str): New observation name.
         param["split_depth"] (int): File split depth number.
 
@@ -92,8 +92,8 @@ class Obs2DepthRGB(RGB):
         reqs (list of ~slitflow.img.image.RGB): RGB Images for merge.
         param["col_name"] (str, optional): New column name for observation
             numbers. Defaults to "obs_no".
-        param["col_description"] (str): New column description. Defaults to
-            "Observation number".
+        param["col_description"] (str, optional): New column description.
+            Defaults to "Observation number".
         param["obs_name"] (str): New observation name.
         param["split_depth"] (int): File split depth number.
 
@@ -136,7 +136,7 @@ class Obs2DepthRGB(RGB):
 
     @ staticmethod
     def process(reqs, param):
-        """Merge RGB images from different observations into the top level depth.
+        """Merge RGB images from different observations to the top level depth.
 
         Args:
             reqs (list of numpy.ndarray): RGB images from different

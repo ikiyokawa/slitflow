@@ -35,6 +35,8 @@ print(D.data[0])
 ```
 Please see ["Getting Started Basic"](https://slitflow.readthedocs.io/en/latest/getting_started_basic.html) to overview the functionality by analyzing the trajectories of simulated random walks.
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yumaitou/sflabo/blob/gitpod/scripts/notebook/getting_started_basic.ipynb)
+
 ["Getting Started Advanced"](https://slitflow.readthedocs.io/en/latest/getting_started_advanced.html) demonstrated the integrity and flexibility of the workflow using 1) a cherry-picked tracking method combining popular tools and 2) various state-of-the-art analyses using [single-molecule movies](https://zenodo.org/record/7645485#.ZAWnix_P2Um).
 
 ![pipeline](docs/img/getting_started_advance_pipeline.png)
@@ -43,7 +45,6 @@ Please see ["Getting Started Basic"](https://slitflow.readthedocs.io/en/latest/g
 If **Slitflow** was useful for your research, please consider citing the following our paper:
 
 * Ito, Y., Hirose, M., and Tokunaga, M. (2023). Slitflow: A Python framework for single-molecule dynamics and localization analysis. SoftwareX 23, 101462. [10.1016/j.softx.2023.101462](https://doi.org/10.1016/j.softx.2023.101462) 
-```
 
 ## Contributing
 **Slitflow** welcomes any contributions such as bug reports, bug fixes, enhancements, and documentation improvements from interested individuals and groups.

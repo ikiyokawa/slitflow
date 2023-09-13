@@ -70,7 +70,7 @@ using one of the provided pip commands.
       environments. Please install the appropriate version from the `microsoft website 
       <https://www.microsoft.com/en-US/download/details.aspx?id=26368>`_ for your PC.
 
-1. Downloading data and making a directory
+3. Downloading data and making a directory
 -----------------------------------------------
 To download image data of single-molecule movies (142 MB), get the zip file
 from `zenodo <https://zenodo.org/record/7645485#.Y-3tqB_P2Ht>`_.

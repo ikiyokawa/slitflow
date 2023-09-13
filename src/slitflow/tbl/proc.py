@@ -153,8 +153,8 @@ class SelectParam(MaskFromParam):
     def set_index(self):
         """Set the index based on the saved temporal index.
 
-        The file number should be added to the masked index not to skip the
-        file number that is not selected.
+        File numbers of the _temp_index are added before selecting the index
+        not to skip the numbers that is not selected during saving.
 
         """
         self.info.index = pd.concat(SelectParam._temp_index)

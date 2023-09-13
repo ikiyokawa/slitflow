@@ -136,8 +136,8 @@ class Obs2Depth(Table):
         reqs (list of Table): Tables to merge.
         param["col_name"] (str, optional): New column name for observation
             numbers. Defaults to "obs_no".
-        param["col_description"] (str): New column description. Defaults to
-            "Observation number".
+        param["col_description"] (str, optional): New column description.
+            Defaults to "Observation number".
         param["obs_name"] (str): New observation name.
         param["split_depth"] (int): File split depth number.
 

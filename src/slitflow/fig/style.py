@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib as mpl
 import matplotlib.font_manager as font_manager
+from matplotlib.colors import LinearSegmentedColormap
 import matplotlib.pyplot as plt
 
 from .figure import Figure
@@ -49,14 +50,16 @@ class Basic(Figure):
             style.
         param["error_cap_sizes"] (list of float, optional): Error bar
             cap line width.
+        param["marker_styles"] (str or list of str, optional): Marker style.
         param["marker_colors"] (list of list of RGB 0-255, optional): Marker
             edge and face colors. e.g., [[[0,0,0]],[[100,100,100]]].
             List of palette_name is also available.
-        param["marker_widths"] (float or list of float, optional): Marker widths.
+        param["marker_widths"] (float or list of float, optional): Marker
+            widths.
         param["marker_sizes"] (float or list of float, optional): Marker sizes.
         param["bar_widths"] (float or list of float): Width of each bar.
-        param["label"] (list of str, optional): [X label string, Y label string] for
-            axes label texts.
+        param["label"] (list of str, optional): [X label string, Y label
+            string] for axes label texts.
         param["legend"] (list, optional): [list of label strings, handle
             indexes of artists to create a legend, keyword arguments for
             matplotlib legend]. If [None, None], then delete all legends. If

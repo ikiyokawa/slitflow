@@ -32,8 +32,7 @@ class SingleCsv(Table):
         """Load a CSV file from the path string.
 
         Args:
-            param["path"] (str): CSV file path.
-            param["col_names"] (list of str): Column names.
+            param["path"] (str): Path to a CSV file.
 
         Returns:
             pandas.DataFrame: Imported table
