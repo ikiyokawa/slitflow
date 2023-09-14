@@ -10,8 +10,8 @@ class Simple(Figure):
     Args:
         reqs[0] (Table): Table containing X and Y axes to create Figure.
         param["calc_cols"] (list of str): Column names for X and Y axes.
-        param["marker_styles"] (str or list of str): Marker style of each
-            group. Defaults to "o".
+        param["marker_styles"] (str or list of str, optional): Marker style of
+            each group. Defaults to "o".
         param["group_depth"] (int): Data split depth number.
 
     Returns:
@@ -26,7 +26,7 @@ class Simple(Figure):
         self.info.add_param(
             "calc_cols", param["calc_cols"], "str", "X and Y columns")
         self.info.add_param(
-            "marker_styles", param["marker_styles"], "list of str",
+            "marker_styles", param.get("marker_styles", "o"), "list of str",
             "Marker style of each group")
 
     @staticmethod
@@ -37,8 +37,8 @@ class Simple(Figure):
             reqs[0] (pandas.DataFrame): Table containing X and Y axes to create
                 figure.
             param["calc_cols"] (list of str): Column names for X and Y axes.
-            param["marker_styles"] (str or list of str): Marker style of each
-                group. Defaults to "o".
+            param["marker_styles"] (str or list of str, optional): Marker style
+                of each group. Defaults to "o".
             param["index_cols"] (list of str): Column names of index.
                 These column names are used for
                 :meth:`pandas.DataFrame.groupby`.

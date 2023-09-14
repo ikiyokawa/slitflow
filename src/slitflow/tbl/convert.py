@@ -79,7 +79,7 @@ class AddColumn(Table):
         """Copy info from reqs[0] and add columns.
         """
         self.info.copy_req(0)
-        if self.reqs[0].info.split_depth() > 0:
+        if len(self.reqs[0].data) > 1:
             raise Exception("Do not split the input table.")
 
         if isinstance(param["col_info"][0], list):

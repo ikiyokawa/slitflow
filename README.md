@@ -35,7 +35,7 @@ print(D.data[0])
 ```
 Please see ["Getting Started Basic"](https://slitflow.readthedocs.io/en/latest/getting_started_basic.html) to overview the functionality by analyzing the trajectories of simulated random walks.
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yumaitou/sflabo/blob/gitpod/scripts/notebook/getting_started_basic.ipynb)
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/yumaitou/slitflow/blob/main/scripts/notebook/getting_started_basic.ipynb)
 
 ["Getting Started Advanced"](https://slitflow.readthedocs.io/en/latest/getting_started_advanced.html) demonstrated the integrity and flexibility of the workflow using 1) a cherry-picked tracking method combining popular tools and 2) various state-of-the-art analyses using [single-molecule movies](https://zenodo.org/record/7645485#.ZAWnix_P2Um).
 

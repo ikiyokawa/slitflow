@@ -94,11 +94,6 @@ class RandomRGB(RGB):
                             "Width and height of each image")
         self.info.add_param("length_unit", param["length_unit"],
                             "str", "Unit of length")
-        index_counts = self.reqs[0].info.get_param_value("index_counts")
-        index_counts.append(3)
-        self.info.add_param("index_counts", index_counts,
-                            "list of int",
-                            "Index counts including the color number")
         if "seed" in param:
             self.info.add_param("seed", param["seed"], "int", "Random seed")
             np.random.seed(param["seed"])
@@ -112,13 +107,12 @@ class RandomRGB(RGB):
             reqs[0] (pandas.DataFrame): Index table.
             param["img_size"] (list of int): Width and height of each image
                 (pix).
-            param["index_counts"] (list of int): Index counts ending with 3,
-                the color number.
 
         Returns:
             numpy.ndarray: RGB image
         """
-        n_img = np.prod(param["index_counts"])
+        df = reqs[0].copy()
+        n_img = len(df) * 3
         return np.random.randint(0, 255, [n_img, param["img_size"][0],
                                           param["img_size"][1]])
 

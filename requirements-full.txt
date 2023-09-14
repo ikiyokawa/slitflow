@@ -1,6 +1,6 @@
 # Packages for basic usage
-numpy
-pandas<2.0.0
+# numpy
+# pandas
 matplotlib
 tifffile
 tqdm # progress bar
@@ -11,7 +11,9 @@ scikit-learn
 scikit-image
 netgraph
 
-# Packages for advanced usage 
+# Packages for advanced usage
+numpy<1.24.0 # for tramway
+pandas<2.0.0
 scikit-posthocs
 trackpy
 openpyxl

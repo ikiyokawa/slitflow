@@ -91,6 +91,9 @@ Features
 API changes
   * Updated :class:`slitflow.tbl.convert.SortCols` to be able to sort all columns, resulting in a change in the process parameters.   
 
+Bug fixes
+    * Fixed minor bugs.
+
 ----
 
 0.1.3 (2023-06-02)

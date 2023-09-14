@@ -143,6 +143,7 @@ class SelectParam(MaskFromParam):
         """
         df_mask = MaskFromParam.process(reqs, param)
         df_sel = df_mask[df_mask[param["mask_col"]] == 1]
+        df_sel.reset_index(drop=True, inplace=True)
 
         # Save the index (multi-process is not available)
         SelectParam._temp_index.append(
