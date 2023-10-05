@@ -84,15 +84,18 @@ Changelog
 
 Features
   * Added :class:`slitflow.trj.subtrj.Subtrajectory` class.
-  * Updated the citation.
-  * Improved API documentation.
   * Added the ``type`` parameter to :class:`slitflow.img.noise.Gauss` class.
 
 API changes
   * Updated :class:`slitflow.tbl.convert.SortCols` to be able to sort all columns, resulting in a change in the process parameters.   
 
 Bug fixes
-    * Fixed minor bugs.
+  * Fixed minor bugs.
+
+Documentation
+  * Updated the citation.
+  * Improved API documentation.
+  * Added pdf and epub documentation.
 
 ----
 
