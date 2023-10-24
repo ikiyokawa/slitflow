@@ -2,11 +2,16 @@
 This module includes functions used in the set_reqs method of the Data class.
 The required data must be sorted to align the correspondence between the data.
 """
+import sys
 
 import numpy as np
 import pandas as pd
 
 from .fun.misc import reduce_list as rl
+if 'ipykernel' in sys.modules:
+    from tqdm.notebook import tqdm
+else:
+    from tqdm import tqdm
 
 
 def fit_1to0(reqs):

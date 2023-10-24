@@ -30,3 +30,4 @@ sphinx-rtd-theme
 docutils==0.16
 doc8
 notebook
+ipywidgets

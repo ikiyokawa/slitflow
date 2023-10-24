@@ -2,11 +2,15 @@ import numpy as np
 import concurrent.futures
 import psutil
 import os
+import sys
 import pickle
 
 from .info import Info
 from . import name as nm
-from tqdm import tqdm
+if 'ipykernel' in sys.modules:
+    from tqdm.notebook import tqdm
+else:
+    from tqdm import tqdm
 from . import setindex
 
 

@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import gc
 import shutil
@@ -10,7 +11,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import rgb2hex
 from netgraph import Graph, get_sugiyama_layout
-from tqdm import tqdm
+if 'ipykernel' in sys.modules:
+    from tqdm.notebook import tqdm
+else:
+    from tqdm import tqdm
 
 import slitflow as sf  # used in eval
 from . import name as nm
