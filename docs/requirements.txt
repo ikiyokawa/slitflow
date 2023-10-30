@@ -1,1 +1,2 @@
 slitflow
+sphinx-rtd-theme
