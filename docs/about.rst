@@ -79,7 +79,7 @@ Changelog
 =============
 **Slitflow** follows major version zero (rapid development) of Semantic Versioning.
 
-0.1.4 (Unreleased)
+0.1.4 (2023-10-30)
 ----------------------
 
 Features
@@ -89,9 +89,6 @@ Features
 API changes
   * Updated :class:`slitflow.tbl.convert.SortCols` to be able to sort all columns, resulting in a change in the process parameters.   
 
-Bug fixes
-  * Fixed minor bugs.
-
 Documentation
   * Updated the citation.
   * Improved API documentation.
@@ -100,6 +97,7 @@ Documentation
 Bug fixes
   * Deleted the incorrect default argument of :func:`slitflow.name.load_data_paths`.
   * Changed the colabo badge link to the local PNG image.
+  * Fixed minor bugs.
 
 ----
 
