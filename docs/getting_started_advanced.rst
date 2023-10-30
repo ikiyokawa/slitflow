@@ -34,7 +34,7 @@ If you have a Google account, you can run the example in
 `Google Colaboratory <https://colab.research.google.com/>`_.
 Click the following badge to launch the Jupyter notebook.
 
-.. image:: https://colab.research.google.com/assets/colab-badge.svg
+.. image:: ./img/colab-badge.png
    :target: https://colab.research.google.com/github/yumaitou/slitflow/blob/main/scripts/notebook/getting_started_advanced.ipynb
 
 If you have a GitHub account, you can run the example in Gitpod.

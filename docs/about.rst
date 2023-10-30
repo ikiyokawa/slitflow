@@ -99,6 +99,7 @@ Documentation
 
 Bug fixes
   * Deleted the incorrect default argument of :func:`slitflow.name.load_data_paths`.
+  * Changed the colabo badge link to the local PNG image.
 
 ----
 
