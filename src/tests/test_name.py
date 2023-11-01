@@ -41,6 +41,7 @@ def test_make_data_paths(tmpdir):
     D.run([], {"index_counts": [2, 1], "type": "trajectory",
                "split_depth": 1})
     D.save()
+    D.load()
     assert sf.name.make_data_paths(D.info, ".csv") == \
         [os.path.join(tmpdir, "g1_grp", "a2_ana", "test_D1_grp_ana.csv"),
          os.path.join(tmpdir, "g1_grp", "a2_ana", "test_D2_grp_ana.csv")]

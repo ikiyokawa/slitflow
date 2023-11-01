@@ -547,3 +547,10 @@ def test_ColorBar_label(GrayLabel):
     D = sf.fig.style.ColorBar()
     D.run([GrayLabel], {})
     assert len(D.data[0].axes[0].get_children()) == 11
+
+
+def test_Basic_cmap(GrayLabel):
+    GrayLabel.info.delete_param("label")
+    D = sf.fig.style.Basic()
+    D.run([GrayLabel], {"cmap": [0, 255, 0]})
+    assert len(D.data[0].axes[0].get_children()) == 11

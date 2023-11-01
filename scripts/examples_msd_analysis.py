@@ -5,9 +5,14 @@ import slitflow as sf
 if __name__ == '__main__':  # This line is needed if multiprocessing is used.
 
     # make a project directory (in the user directory)
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "examples_msd_analysis")
-    PL = sf.manager.Pipeline(prj_dir)
+    root_dir = "slitflow_tutorial"
+    project_dir = os.path.join(root_dir, "examples_msd_analysis")
+
+    # Create directories
+    if not os.path.isdir(root_dir):
+        os.makedirs(root_dir)
+    if not os.path.isdir(project_dir):
+        os.makedirs(project_dir)
 
     n_trj = 100
     n_step = 19
@@ -29,6 +34,7 @@ if __name__ == '__main__':  # This line is needed if multiprocessing is used.
                 params.append([diffusion_coeff, radius_val])
 
     # simulate confined random walk
+    PL = sf.manager.Pipeline(project_dir)
     for obs_name, param in zip(obs_names, params):
         PL.add(sf.tbl.create.Index(), 0, (1, 1), "trj", "index",
                [obs_name], [], [],
@@ -99,12 +105,12 @@ if __name__ == '__main__':  # This line is needed if multiprocessing is used.
             for rep_name in rep_names:
                 rep_obs_names.append(
                     diff_rad_name + "_" + rep_name)
-                PL.add(sf.tbl.convert.Obs2Depth(), 0, (3, 1), "stat", "rep",
-                       rep_obs_names, [(2, 3)] * 3, [0] * 3,
-                       {"col_name": "rep_no",
-                        "col_description": "Replicate number",
-                        "obs_name": diff_rad_name, "split_depth": 0})
-                diff_rad_names.append(diff_rad_name)
+            PL.add(sf.tbl.convert.Obs2Depth(), 0, (3, 1), "stat", "rep",
+                   rep_obs_names, [(2, 3)] * 3, [0] * 3,
+                   {"col_name": "rep_no",
+                    "col_description": "Replicate number",
+                    "obs_name": diff_rad_name, "split_depth": 0})
+            diff_rad_names.append(diff_rad_name)
 
     PL.add(sf.tbl.convert.Obs2Depth(), 0, (3, 2), None, "param",
            diff_rad_names, [(3, 1)] * 6, [0] * 6,

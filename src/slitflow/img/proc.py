@@ -2,10 +2,10 @@
 This process module includes classes that change image structure such as
 frm_no and image width and height.
 """
-import pandas as pd
 
 from ..img.image import Image
 from ..tbl.proc import MaskFromParam
+from .. import setindex
 
 
 class SelectParam(Image):
@@ -41,8 +41,8 @@ class SelectParam(Image):
 
     def set_info(self, param={}):
         """Copy info from reqs[0] and add param."""
-        if self.reqs[0].info.split_depth_req != \
-                self.reqs[1].info.split_depth_req:
+        if self.reqs[0].info.data_split_depth != \
+                self.reqs[1].info.data_split_depth:
             raise Exception("Split depths should have the same value")
         self.info.copy_req(0)
         self.info.add_param("mask_col", param.get("mask_col", "mask"),
@@ -84,16 +84,13 @@ class SelectParam(Image):
         SelectParam._temp_index.append(df_mask)
         return img
 
+    def post_run(self):
+        """Remove empty data"""
+        skipped_data = []
+        for data in self.data:
+            if data.shape[0] > 0:
+                skipped_data.append(data)
+        self.data = skipped_data
+
     def set_index(self):
-        """Set the index based on the saved temporal index.
-
-        File numbers of the _temp_index are added before selecting the index
-        not to skip the numbers that is not selected during saving.
-
-        """
-        self.info.index = pd.concat(SelectParam._temp_index)
-        self.info.set_index_file_no()
-        mask_col = self.info.get_param_value("mask_col")
-        self.info.index = self.info.index[self.info.index[mask_col] > 0]
-        self.info.index = self.info.index.drop(
-            columns=mask_col).drop_duplicates()
+        setindex.select_param(self, SelectParam)

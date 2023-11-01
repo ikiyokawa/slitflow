@@ -79,7 +79,8 @@ def test_Data_set_reqs():
 
 @pytest.fixture
 def df_info_index():
-    return pd.DataFrame({"img_no": [1], "trj_no": [1], "_file": [0]})
+    return pd.DataFrame(
+        {"img_no": [1], "trj_no": [1], "_split": [1], "_file": [1]})
 
 
 def test_Data_set_index(df_info_index):
@@ -90,6 +91,7 @@ def test_Data_set_index(df_info_index):
     D = sf.data.Data()
     D.set_reqs([R])
     D.info.copy_req(0)
+    D.data = R.data
     D.set_index()
     assert D.info.index.equals(df_info_index)
 

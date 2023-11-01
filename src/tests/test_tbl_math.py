@@ -25,6 +25,16 @@ def test_EvalOneCol(Index):
           "type": "one_", "eval": "x+1", "split_depth": 0})
     assert np.all(D.data[0]["one_trj_no"].values == np.array([2, 3, 4]))
 
+    D2 = sf.trj.random.Walk2DCenter()
+    D2.run([Index], {"diff_coeff": 0.1, "interval": 0.1, "n_step": 5,
+                     "length_unit": "um", "seed": 1, "split_depth": 0})
+
+    D3 = sf.tbl.math.EvalOneCol()
+    D3.run([D2], {"type": "standardize", "split_depth": 0})
+
+    assert list(D3.data[0].columns) ==\
+        ["img_no", "trj_no", "frm_no", "std_x_um", "std_y_um"]
+
 
 def test_EvalTwoCols(Index):
     D = sf.tbl.math.EvalTwoCols()

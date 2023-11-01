@@ -29,7 +29,7 @@ class Gray(image.Image):
         """Copy info from reqs[0] and add params.
         """
         req_cols = self.reqs[0].info.get_column_name("index")
-        req_cols = req_cols[:self.reqs[0].info.split_depth()]
+        req_cols = req_cols[:self.reqs[0].info.data_split_depth]
         cols = self.reqs[0].info.get_column_name("col")
         self.info.copy_req(0, "column", req_cols + cols)
         self.info.copy_req(0, "param")
@@ -96,7 +96,7 @@ class RGB(image.RGB):
         """Copy info from reqs[0] and add params.
         """
         req_cols = self.reqs[0].info.get_column_name("index")
-        req_cols = req_cols[:self.reqs[0].info.split_depth()]
+        req_cols = req_cols[:self.reqs[0].info.data_split_depth]
         cols = self.reqs[0].info.get_column_name("col")
         cols = req_cols + ["color"] + cols
         self.info.copy_req(0, "column", cols)

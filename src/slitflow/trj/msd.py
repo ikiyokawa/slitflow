@@ -77,7 +77,8 @@ class Each(Table):
             pandas.DataFrame: Mean square displacement with time interval
         """
         df = reqs[0].copy()
-        grouped = df.groupby(rl(param["index_cols"]), as_index=False)
+        grouped = df.groupby(rl(param["index_cols"]), as_index=False,
+                             group_keys=False)
         df_new = grouped.apply(lambda x: calc_msd(
             x, param)).reset_index(drop=True)
         df_index = df.loc[:, param["index_cols"]].reset_index(drop=True)
@@ -112,11 +113,13 @@ class FitAnom(Table):
         reqs[0] (Table): MSD Table. Required param; ``interval``,
             ``length_unit``. Required column; ``msd``.
         param["step"] (int): Step number for fitting from interval=0.
+        param["log_d"] (bool, optional): Whether to add log10 scale for D.
+            Defaults to False.
         param["group_depth"] (int): Data split depth for fitting.
         param["split_depth"] (int): File split depth number.
 
     Returns:
-        Table: Table containing the list of fitting parameters
+        Table: Table containing the list of fitting parameters.
     """
 
     def set_info(self, param):
@@ -132,6 +135,12 @@ class FitAnom(Table):
             "Diffusion coefficient")
         self.info.add_column(
             0, "alpha", "float64", "none", "Anomalous exponent")
+        self.info.add_param("log_d", param.get("log_d", False), "bool",
+                            "Whether to add log scale for D")
+        if self.info.get_param_value("log_d"):
+            self.info.add_column(0, "log_diff_coeff", "float64", "log10[" +
+                                 length_unit + "^2/s]",
+                                 "Logarithm 10 of diffusion coefficient")
         self.info.add_param(
             "step", param["step"], "num",
             "Step number for fitting from interval=0")
@@ -149,6 +158,7 @@ class FitAnom(Table):
                 ``msd`` columns.
             param["step"] (int): Step number for fitting from interval=0.
             param["interval"] (float): Time interval in second.
+            param["log_d"] (bool, optional): Whether to add log10 scale for D.
             param["index_cols"] (list of str): Column names for index.
 
         Returns:
@@ -163,6 +173,8 @@ class FitAnom(Table):
             s = fit_msd_anom(df, param)
             df = pd.DataFrame([s])
             df = df.reset_index(drop=True)
+        if param.get("log_d", False):
+            df["log_diff_coeff"] = np.log10(df["diff_coeff"])
         return df
 
 

@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 
 from ..data import Data
@@ -31,22 +32,39 @@ class Table(Data):
     def split_data(self):
         """Split data table according to info.index.
         """
-        if len([x for x in self.data if x is not None]) == 0:
-            return  # e.g. data.load.table.CsvFromFolder
-        df = pd.concat(self.data)
-        df_index = self.info.index.copy()
-        common_cols = list(set(df_index.columns) & set(df.columns))
-        if len(common_cols) == 0:
-            return
-        if len(df) == 0:
-            return  # see test_trj_filter
-        df = pd.merge(df, df_index, on=common_cols, how="left")
-        grouped = df.groupby(["_file", "_split"])
-        self.data = list(list(zip(*grouped))[1])
-        data = []
-        for df in self.data:
-            data.append(df.drop(["_file", "_split"], axis=1))
-        self.data = data
+        df_index = self.info.index
+        index_cols = [col for col in df_index.columns if col not in
+                      ["_file", "_split", "_dest", "_keep", "_load"]]
+        self.data = [df for df in self.data if df is not None]
+        if len(self.data) == 0:
+            # make None list
+            dest_abs = df_index["_dest"].abs().values
+            dest_abs = dest_abs[dest_abs != 0]
+            self.data = [None] * len(np.sort(np.unique(dest_abs)))
+            # delete temporary rows
+            # find "_file", "_split", "_keep" are all nan and delete its rows
+            df_index = df_index.dropna(subset=["_file", "_split", "_keep"],
+                                       how="all")
+            self.info.index = df_index.reset_index(drop=True)
+        else:
+            df_data = pd.concat(self.data)
+            if len(index_cols) == 0:
+                df_dest = df_index[["_dest"]].drop_duplicates()
+                df_dest['_key'] = 1
+                df_data['_key'] = 1
+                df = pd.merge(
+                    df_dest, df_data, on='_key').drop('_key', axis=1)
+            else:
+                df = pd.merge(df_index[index_cols + ["_dest"]],
+                              df_data, on=index_cols, how="left")
+            df = df[df["_dest"] != 0]
+            df['_dest_abs'] = df['_dest'].abs()
+
+            df = df.sort_values(by=['_dest_abs'] +
+                                index_cols).reset_index(drop=True)
+            df.drop(columns=['_dest_abs'], inplace=True)
+            self.data = [None if dest < 0 else group.drop(columns=["_dest"])
+                         for dest, group in df.groupby("_dest", sort=False)]
 
     def set_index(self):
         """How to get info.index.
@@ -70,10 +88,14 @@ def merge_different_index(self, req_no):
 
     """
     df_index = self.reqs[req_no].info.file_index()
+    if len(df_index) == 0:
+        return
     dfs = []
     for i, (_, row) in enumerate(df_index.groupby(["_file", "_split"])):
-        row_index = row.drop_duplicates()\
-            .drop(["_file", "_split"], axis=1).reset_index(drop=True)
+        row_index = row.drop_duplicates().reset_index(drop=True)
+        for col in "_file", "_split", "_dest", "_keep":
+            if col in row_index.columns:
+                row_index.drop(col, axis=1, inplace=True)
         df = self.data[i]
         df_mrg = pd.concat([row_index, df], axis=1)
         dfs.append(df_mrg.fillna(method="ffill").astype(

@@ -3,6 +3,7 @@ import pandas as pd
 import tifffile as tf
 
 from ..img.image import Image
+from ..tbl.create import Index
 
 
 class SingleFile(Image):
@@ -115,7 +116,8 @@ class SplitFile(Image):
     info file.
 
     Args:
-        reqs[] (None): Input Data is not required.
+        reqs[0] (slitflow.dev.img.pitch.Grid, optional) A table containing
+            pitch information if it can be provided.
         param["path"] (str): Path to a split tiff file.
         param["length_unit"] (str): String of length unit such as "um",
             "nm", "pix". This string is used as column name footers and units.
@@ -159,6 +161,18 @@ class SplitFile(Image):
             # with - Sample1.sf, Sample1.sfx
     """
 
+    def set_reqs(self, reqs, param):
+        """Create index table for the image."""
+        load_param = get_param(param["path"])
+        D = Index()
+        D.run([], {"index_counts": [1, load_param["TotalFrm"]],
+                   "type": "movie", "index_value": param["indexes"][0],
+                   "split_depth": 0})
+        if len(reqs) > 0:
+            self.reqs = [D, reqs[0]]
+        else:
+            self.reqs = [D]
+
     def set_info(self, param):
         load_param = get_param(param["path"])
         if "index_cols" not in param:
@@ -169,11 +183,13 @@ class SplitFile(Image):
                 index_col[0], index_col[1], "int32", "num", index_col[2])
         self.info.add_column(
             0, "intensity", param["value_type"], "a.u.", "Pixel intensity")
-        self.info.add_param(
-            "length_unit", param["length_unit"], "str", "Unit of length")
-        self.info.add_param(
-            "pitch", param["pitch"], param["length_unit"] + "/pix",
-            "Length per pixel")
+        if "length_unit" in param:
+            self.info.add_param(
+                "length_unit", param["length_unit"], "str", "Unit of length")
+        if "pitch" in param:
+            self.info.add_param(
+                "pitch", param["pitch"], param["length_unit"] + "/pix",
+                "Length per pixel")
         if "interval" in param:
             self.info.add_param(
                 "interval", param["interval"], "s",
@@ -191,6 +207,16 @@ class SplitFile(Image):
             "Internal param of index")
         self.info.add_param(
             "path", param["path"], "str", "Path to a split tiff file")
+        self.info.set_split_depth(param["split_depth"])
+
+        # set pitch
+        if len(self.reqs) == 2:
+            self.info.copy_req_params(1)
+            df_pitch = self.reqs[1].data[0]
+            pitch = df_pitch["pitch"].values[0].astype(np.float64)
+            length_unit = self.info.get_param_value("length_unit")
+            self.info.add_param(
+                "pitch", pitch, length_unit + "/pix", "Length per pixel")
         self.info.set_split_depth(param["split_depth"])
 
     @ staticmethod

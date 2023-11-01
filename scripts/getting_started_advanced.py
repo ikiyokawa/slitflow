@@ -179,7 +179,7 @@ def pipeline_5_spot_on_figure():
             "tick": [[0, 0.2, 0.4, 0.6, 0.8], [0, 0.02, 0.04]],
             "marker_widths": 0.2})
     PL.add(sf.fig.figure.ToTiff(), 0, (4, 7), None, "fig_tif",
-           ["RPB1"], [(4, 6)], [1], {"split_depth": 0})
+           ["RPB1"], [(4, 6)], [2], {"split_depth": 0})
     PL.add(sf.img.montage.RGB(), 0, (4, 8), None, 'fig_mtg',
            ["RPB1"], [(4, 7)], [0],
            {"grid_shape": [4, 1], "padding_width": 0, "split_depth": 0})

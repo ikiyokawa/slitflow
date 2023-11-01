@@ -2,7 +2,7 @@ import sys
 import os
 
 import pytest
-import numpy as np
+import pandas as pd
 
 import slitflow as sf
 from slitflow.name import make_info_path as ipath
@@ -73,7 +73,7 @@ def test_Info_load_index(tmpdir):
     del D2
     D2 = sf.tbl.stat.Mean(ipath(tmpdir, 1, 2, "test"))
     D2.load()
-    assert len(D2.info.index) == 0
+    assert D2.info.index.equals(pd.DataFrame({"_split": [1], "_keep": [1]}))
 
 
 def test_Info_load_index_split(tmpdir):
@@ -85,22 +85,22 @@ def test_Info_load_index_split(tmpdir):
 
     del D1
     D1 = sf.tbl.create.Index(ipath(tmpdir, 1, 1, "test", "index", "grp"))
-    D1.load(0)
+    D1.load([1])
 
     D2 = sf.trj.random.WalkRect(ipath(tmpdir, 1, 2, "test", "diff"))
     D2.run([D1], {"diff_coeff": 0.1, "interval": 0.1, "n_step": 2,
                   "dimension": 2, "lims": [[1, 2], [1, 2]],
                   "length_unit": "um", "split_depth": 1})
-    D2.info.set_file_nos(0)
+    D2.info.set_file_nos([1])
     D2.save()
 
-    D1.load(1)
+    D1.load([2])
     del D2
     D2 = sf.trj.random.WalkRect(ipath(tmpdir, 1, 2, "test"))
     D2.run([D1], {"diff_coeff": 0.1, "interval": 0.1, "n_step": 2,
                   "dimension": 2, "lims": [[1, 2], [1, 2]],
                   "length_unit": "um", "split_depth": 1})
-    D2.info.set_file_nos(1)
+    D2.info.set_file_nos([2])
     D2.save()
     assert len(D2.info.index) == 12
 
@@ -110,23 +110,17 @@ def test_Info_set_file_nos():
     D.run([], {"index_counts": [2, 2], "type": "trajectory",
                "split_depth": 1})
 
-    D.info.set_file_nos(np.nan)
-    assert D.info.file_nos == [0, 1]
+    D.info.set_file_nos(None)
+    assert D.info.file_nos() == [1, 2]
 
-    D.info.set_file_nos([0, 1])
-    assert D.info.file_nos == [0, 1]
-
-    D.info.set_file_nos(np.array([0, 1]))
-    assert D.info.file_nos == [0, 1]
-
-    with pytest.raises(Exception) as e:
-        D.info.set_file_nos("dummy")
+    D.info.set_file_nos([1, 2])
+    assert D.info.file_nos() == [1, 2]
 
     D.set_split(0)
     D2 = sf.tbl.stat.Mean()
     D2.run([D], {"calc_col": "trj_no", "split_depth": 0})
-    D2.info.set_file_nos(np.nan)
-    assert D2.info.file_nos == [0]
+    D2.info.set_file_nos(None)
+    assert D2.info.file_nos() == [1]
 
 
 def test_Info_split():

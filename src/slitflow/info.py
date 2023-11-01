@@ -30,7 +30,8 @@ class Info():
         index (pandas.DataFrame): Index table to describe the data
             hierarchy.
         file_nos (list of int): List of split file numbers.
-        split_depth_req (int): Split depth number used for reqs_split.
+        load_split_depth (int): Split depth number for loading data.
+        data_split_depth (int): Split depth number to split the data property.
 
     """
 
@@ -49,7 +50,8 @@ class Info():
         self.index = pd.DataFrame()
         self.set_path(info_path)
         self.load()
-        self.split_depth_req = None
+        self.load_split_depth = None
+        self.data_split_depth = None
 
     def __str__(self):
         info_str = "Data: " + fullname(self.Data)
@@ -93,7 +95,6 @@ class Info():
                 self.column = info["column"]
                 self.param = info["param"]
                 self.load_index()
-                self.set_file_nos(None)
         else:
             pass
 
@@ -142,13 +143,13 @@ class Info():
         if load_index:
             self.load_index()
         index_path = self.path + "x"
-        if "_split" in self.index.columns:
-            self.index.drop(columns=["_split"], inplace=True)
-        if "_file" in self.index.columns:
-            self.index.drop(columns=["_file"], inplace=True)
+        index = self.index.copy()
+        for col in index.columns:
+            if col not in self.get_column_name("index"):
+                index.drop(columns=[col], inplace=True)
 
         # size reducing code
-        idx = self.index.to_numpy()
+        idx = index.to_numpy()
         to_sel = idx[:-1, :] == idx[1:, :]
         to_sel = np.cumprod(to_sel.astype(np.int8), axis=1).astype(np.bool8)
         to_sel = np.insert(to_sel, 0, False, axis=0)
@@ -178,34 +179,26 @@ class Info():
             grouped = self.index.groupby(rl(index_names[:self.split_depth()]))
             dfs = list(list(zip(*grouped))[1])
             for i, df in enumerate(dfs):
-                df["_file"] = i
+                df["_file"] = i + 1
             self.index = pd.concat(dfs)
         else:
-            self.index["_file"] = 0
+            self.index["_file"] = 1
 
     def set_file_nos(self, file_nos):
-        """Add current file number list of split data.
+        if file_nos is None:
+            if "_file" not in self.index.columns:
+                self.index["_file"] = 1
+            file_nos = list(np.unique(self.index["_file"].values))
+        self.index["_split"] = 0
+        mask = self.index["_file"].isin(file_nos)
+        self.index.loc[mask, "_split"] = self.index.loc[mask, "_file"]
 
-        Args:
-            file_nos (array-like): File numbers corresponding to
-                the split data.
-        """
-        stash_split_depth = self.split_depth()
-        if isinstance(file_nos, list):
-            pass
-        elif isinstance(file_nos, np.ndarray):
-            file_nos = list(file_nos.astype(int))
-        elif file_nos is None or pd.isna(file_nos):  # fill from index
-            if len(self.index) == 0:
-                file_nos = [0]
-            else:
-                file_nos = list(np.unique(self.index["_file"].values))
-        elif type(file_nos) in (int, np.int64, float, np.float64):
-            file_nos = [int(file_nos)]
+    def file_nos(self):
+        if len(self.index) == 0:
+            return [1]  # In case of no index
         else:
-            raise Exception("Type of file_nos is invalid.")
-        self.file_nos = file_nos
-        self.set_split_depth(stash_split_depth)
+            return self.index.loc[self.index["_split"] != 0, "_file"]\
+                .unique().tolist()
 
     def file_index(self):
         """Return index table of current file number.
@@ -215,12 +208,12 @@ class Info():
         """
         self.set_index_file_no()
         index = self.index.copy()
-        if len(index) == 0:
-            self.file_nos = [0]
-            return index
         if not hasattr(self, "file_nos"):
             self.set_file_nos(None)
-        return index[index["_file"].isin(self.file_nos)]
+        file_nos = self.file_nos()
+        if "_file" not in index.columns:
+            index["_file"] = 1
+        return index[index["_file"].isin(file_nos)]
 
     def save(self, info_path=None):
         """Save data information as a JSON file.
@@ -251,31 +244,30 @@ class Info():
         """
         if split_depth is None:
             split_depth = self.split_depth()
-        self.split_depth_req = split_depth
+        self.data_split_depth = split_depth
+
         index_names = self.get_column_name("index")
-        if split_depth > 0:
-            if "_split" in self.index.columns:
-                index = self.index.drop(["_split"], axis=1)
-            else:
-                index = self.index
-            if "_file" not in self.index.columns:
-                index["_file"] = []
-            if len(index) == 0:
-                self.index = index
-                return  # if no data is selected.
-            grouped = index.groupby("_file")
-            dfs_split = []
-            for _, df_file in grouped:
-                df_split = df_file[index_names[:split_depth]].drop_duplicates()
-                df_split["_split"] = range(len(df_split))
-                dfs_split.append(df_split)
-            df_split = pd.concat(dfs_split)
-            self.index = index.merge(df_split, on=index_names[:split_depth])
-            self.index = self.index.reindex(
-                index_names + ["_file", "_split"], axis=1)
+        if len(self.index) == 0:
+            self.index = pd.DataFrame({"_split": [1], "_dest": [1]})
+            return
+        if self.index.equals(pd.DataFrame({"_split": [1]})):
+            self.index = pd.DataFrame({"_split": [1], "_dest": [1]})
+            return
+        if "_split" not in self.index.columns:
+            self.index["_split"] = 1
+        if "_dest" in self.index.columns:
+            self.index["_split"] = self.index["_dest"]
+
+        if split_depth == 0:
+            self.index["_dest"] = 1
+        elif split_depth == 1:
+            self.index["_dest"] = self.index.groupby(
+                index_names[0]).ngroup() + 1
         else:
-            self.index["_file"] = 0
-            self.index["_split"] = 0
+            self.index["_dest"] = self.index.groupby(
+                index_names[:split_depth]).ngroup() + 1
+
+        self.index.loc[self.index["_split"] == 0, "_dest"] = 0
 
     def get_dict(self):
         """Return a dictionary of all information for saving.
@@ -394,13 +386,13 @@ class Info():
         Args:
             name (str): Column name.
             item (str): Column item to change. The item should be "depth",
-                "type", "unit" or "description".
+                "name", "type", "unit" or "description".
             new_value (str): New value.
         """
         col_dict = self.get_column_dict(name)
         col_dict[item] = new_value
         self.delete_column(name)
-        self.add_column(col_dict["depth"], name, col_dict["type"],
+        self.add_column(col_dict["depth"], col_dict["name"], col_dict["type"],
                         col_dict["unit"], col_dict["description"])
 
     def get_column_type(self):
@@ -499,6 +491,35 @@ class Info():
                 "description": description}
         self.param.append(dict)
 
+    def addel_param(self, new_params, name, name_temp, unit, description,
+                    init_val=None):
+        """Add a parameter dictionary to :attr:`param` property
+        if name is exist in temporal parameter dictionary
+        else if init_val is not None.
+        Else delete selected parameter from :attr:`param` property.
+
+        Args:
+            new_params (dict): Dictionary of new parameters.
+            name (str): Parameter name for save.
+            name_temp(str): Parameter name in new_params.
+            unit (str): Unit of parameter value.
+            description (str): Explanation of parameter.
+            init_val (any): Initial value of parameter.
+        """
+        for d in self.get_param_names():
+            if d == name:
+                self.delete_param(name)
+        if name_temp in new_params:
+            value = new_params[name_temp]
+        elif init_val is not None:
+            value = init_val
+        else:
+            value = None
+        if value is not None:
+            dict = {"name": name, "value": value, "unit": unit,
+                    "description": description}
+            self.param.append(dict)
+
     def copy_req_params(self, req_no=0, names=None):
         """Reuse parameters from the information of required data.
 
@@ -547,9 +568,9 @@ class Info():
         """Add user-defined parameters from param["user_param"].
 
         Args:
-            param (dict): Parameter dictionary containing the "user_param"
-                item. param["user_param"] should be list of list contain [name,
-                value, unit, description].
+            param (list of list): Parameter dictionary containing the
+                "user_param" item. param["user_param"] should be list of list
+                contain [name, value, unit, description].
         """
         if "user_param" in param:
             for user_param in param["user_param"]:
@@ -722,6 +743,16 @@ class Info():
                     depth_id = depth_id + "D" + str(int(val))
                 depth_ids.append(depth_id)
         return depth_ids
+
+    def rename_class_name(self, new_name):
+        """Rename class name in meta data and save info.
+
+        Args:
+            new_name (str): New class name.
+        """
+        self.meta["class"] = new_name
+        with open(self.path, "w") as f:
+            json.dump(self.get_dict(), f, indent=2)
 
 
 def fullname(o):

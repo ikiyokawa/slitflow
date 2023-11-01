@@ -79,6 +79,14 @@ Changelog
 =============
 **Slitflow** follows major version zero (rapid development) of Semantic Versioning.
 
+0.1.5 (2023-11-01)
+----------------------
+
+Internal Changes
+  * Updated the internal functions for index operations related to file splitting. Note that the input/output and behavior of the Data and Pipeline classes remain unchanged, allowing users to utilize the update seamlessly without any awareness of the changes made.
+
+----
+
 0.1.4 (2023-10-30)
 ----------------------
 

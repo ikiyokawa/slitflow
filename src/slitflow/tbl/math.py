@@ -3,6 +3,7 @@ import numpy as np
 from .table import Table
 from .. import RANDOM_SEED
 from ..fun.misc import reduce_list as rl
+from .. import setreqs
 
 np.random.seed(RANDOM_SEED)
 
@@ -12,11 +13,12 @@ class EvalOneCol(Table):
 
     Args:
         reqs[0] (Table): Table containing columns for calculation.
-        param["calc_cols"] (list of str): Column names to calculate.
+        param["calc_cols"] (list of str, optional): Column names to calculate.
+            If not provided, all columns are calculated.
         param["split_depth"] (int): File split depth number.
         param["type"] (str, optional): Preset calculation type. Select
-            from "log10" or user defined. type is also used as new column name
-            headers.
+            from "log10", "standardize" or user defined. type is also used as
+            new column name headers.
         param["eval"] (str, optional): Calculation eval string such as
             '__import__("numpy").log10(x)'. eval is needed if type is not
             defined. The input values should be x in eval string.
@@ -32,10 +34,15 @@ class EvalOneCol(Table):
         if param["type"] == "log10":
             calc_name = "log10_"
             eval_str = '__import__("numpy").log10(x)'
+        elif param["type"] == "standardize":
+            calc_name = "std_"
+            eval_str = "(x - x.mean()) / x.std()"
         else:
             calc_name = param["type"]
             eval_str = param["eval"]
         new_cols = []
+        if "calc_cols" not in param:
+            param["calc_cols"] = self.info.get_column_name("col")
         for calc_col in param["calc_cols"]:
             new_col = calc_name + calc_col
             new_cols.append(new_col)
@@ -56,6 +63,10 @@ class EvalOneCol(Table):
     @staticmethod
     def process(reqs, param):
         """Apply :func:`eval` calculation to columns.
+
+        If you want to calculate multiple columns in one Table object,
+        , use :class:`EvalTwoCols` and select the same Table object for
+        reqs[0] and reqs[1].
 
         Args:
             reqs[0] (pandas.DataFrame): Table containing columns for
@@ -90,16 +101,40 @@ class EvalTwoCols(Table):
             column2=y. Ex. "x*y".
         param["new_col_info"](tuple of str): Information of new
             columns. This should be ("name", "type", "unit", "description").
+        param["keep_cols"] (list of bool or list of list of str): If True, keep
+            all columns. If False, delete all columns except calc_cols.
+            If list of str, keep columns in the list.
         param["split_depth"] (int): File split depth number.
 
     Returns:
         Table: Calculated column data
     """
 
+    def set_reqs(self, reqs, param):
+        """Drop elements that exist only in one required data.
+        """
+        self.reqs = setreqs.allocate_data(reqs, param)
+
     def set_info(self, param={}):
         """Set new column information and add params."""
+        if "keep_cols" not in param:
+            param["keep_cols"] = [False, False]
+        keep_cols_list = []
+        for i, keep_cols in enumerate(param["keep_cols"]):
+            if keep_cols is True:
+                keep_cols = self.reqs[i].info.get_column_name("col")
+            elif keep_cols is False:
+                keep_cols = []
+            keep_cols_list.append(keep_cols)
+        self.info.add_param("keep_cols", keep_cols_list, "list of str",
+                            "Keep columns in the list")
         self.info.copy_req(0)
-        self.info.delete_column(keeps=self.info.get_column_name("index"))
+        keeps = self.info.get_column_name("index") + keep_cols_list[0]
+        self.info.delete_column(keeps=keeps)
+
+        self.info.copy_req(1)
+        self.info.delete_column(keeps=keeps + keep_cols_list[1])
+
         self.info.add_column(0, *param["new_col_info"])
         self.info.add_param("calc_cols", param["calc_cols"],
                             "list of str", "Column names of [x, y]")
@@ -127,16 +162,21 @@ class EvalTwoCols(Table):
             param["index_cols"] (list of str): Column names of index.
             param["eval"] (str): String of equation with column1=x and
                 column2=y. Ex. "x*y".
+            param["keep_cols"] (list of list of str): List of column names to
+                keep.
             param["col_name"](str): Name string of calculated column.
 
         Returns:
             Table: Calculated column data
         """
-        df = reqs[0].copy()
-        df1 = reqs[1].copy()
-        x = df[param["calc_cols"][0]].values
-        y = df1[param["calc_cols"][1]].values
-        df = df[param["index_cols"]]
+        df1 = reqs[0].copy()
+        df2 = reqs[1].copy()
+        x = df1[param["calc_cols"][0]].values
+        y = df2[param["calc_cols"][1]].values
+        df = df1[param["index_cols"]]
+        for keep_cols in param["keep_cols"]:
+            for keep_col in keep_cols:
+                df[keep_col] = df1[[keep_col]]
         df[param["col_name"]] = eval(param["eval"], {}, {"x": x, "y": y})
         return df
 

@@ -16,7 +16,7 @@ def test_from_req():
     D3 = sf.img.calc.MaskArea()
     D3.run([D2], {"split_depth": 0})
     assert D3.info.index.equals(
-        pd.DataFrame({"img_no": [1, 2], "_file": [0, 0], "_split": [0, 0]}))
+        pd.DataFrame({"img_no": [1, 2], "_split": [1, 1], "_file": [1, 1]}))
 
 
 def test_from_req_pipeline(tmpdir):
@@ -44,7 +44,7 @@ def test_from_data():
                "split_depth": 0})
     assert D.info.index.equals(
         pd.DataFrame({"img_no": [1], "trj_no": [1],
-                      "_file": [0], "_split": [0]}))
+                      "_split": [1], "_file": [1]}))
 
 
 # from_req_plus_data is tested in

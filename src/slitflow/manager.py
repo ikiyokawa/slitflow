@@ -102,8 +102,13 @@ class Pipeline():
                 for data file names.
             reqs_address (list of tuple): List of (group no, analysis no) of
                 required data files.
-            reqs_split (list of int): List of ``split_depth`` to resplit
-                required data.
+            reqs_split (list of int or list of list of int): List of split
+                depth of each required data. Each element should be
+                [load_split, data_split]. If load_split and data_split are the
+                same, it can be specified as [split]. That is, it is specified
+                in the format [[load_split1, data_split1], [load_split2,
+                data_split2], ...] or [load_and_data_split1,
+                load_and_data_split2,...].
             param (dict): Parameter dictionary.
         """
         class_name = self.set_class_name(class_name)
@@ -276,7 +281,7 @@ class Pipeline():
                 obs_names = obs_names.copy()
             if len(obs_names) != 0:
                 for obs_name in obs_names:
-                    if not isinstance(obs_name, str):
+                    if type(obs_name) not in [str, list]:
                         raise Exception("Set obs_names as list of string.")
         return obs_names
 
@@ -285,6 +290,9 @@ class Pipeline():
 
         Args:
             reqs_split (list or str): List of ``split_depth`` of required data.
+                reqs_split should be [[load_split1, data_split1], [load_split2,
+                data_split2], ...] or [load_and_data_split1,
+                load_and_data_split2,...]
             reqs_address (list of tuple): List of required address to check
                 then number of required data.
 
@@ -335,12 +343,11 @@ class Pipeline():
         if sheet_name is not None:
             self.load(sheet_name)
         indices = self.convert_indices(indices)
-        print("Run All start...")
-        for index, row in self.df.iterrows():  # repeat task
+        print("===== Pipeline start =====")
+        for index, row in self.df.iterrows():
             if index not in indices:
                 continue
             class_name = row.class_name
-            print("Task start... " + class_name)
             run_mode = row.run_mode
             address = row.address
             grp_name = row.grp_name
@@ -350,24 +357,51 @@ class Pipeline():
             reqs_split = row.reqs_split
             param = row.param
 
-            if class_name in \
-                ["sf.tbl.convert.Obs2Depth()",
-                 "sf.img.convert.Obs2Depth()",
-                 "sf.img.convert.Obs2DepthRGB()"]:
-                self.run_Obs2Depth(class_name, reqs_split, reqs_address,
-                                   obs_names, param, grp_name,
-                                   ana_name, run_mode, address)
+            if class_name in ["sf.tbl.convert.Obs2Depth()",
+                              "sf.img.convert.Obs2Depth()",
+                              "sf.img.convert.Obs2DepthRGB()"]:
+                work_dir = str(address[0]) + "_" + grp_name + \
+                    "/" + str(address[1]) + "_" + ana_name
+                print(work_dir + " - " + class_name + " mode:"
+                      + str(run_mode))
+                self.run_Obs2Depth(
+                    class_name, reqs_split, reqs_address, obs_names, param,
+                    grp_name, ana_name, run_mode, address)
+            elif class_name in ["sf.dev.tbl.convert.Index()"]:
+                work_dir = str(address[0]) + "_" + grp_name + \
+                    "/" + str(address[1]) + "_" + ana_name
+                print(work_dir + " - " + class_name + " mode:"
+                      + str(run_mode))
+                self.run_index(class_name, reqs_address, obs_names, param,
+                               grp_name, ana_name, address)
             elif class_name == "Delete()":
+                work_dir = str(reqs_address[0][0]) + "_" + grp_name + \
+                    "/" + str(reqs_address[0][1]) + "_" + ana_name
+                print(work_dir + " - " + class_name + " mode:"
+                      + str(run_mode))
                 self.run_delete(reqs_address, obs_names, param)
             elif class_name == "Copy()":
+                work_dir = str(address[0]) + "_" + grp_name + \
+                    "/" + str(address[1]) + "_" + ana_name
+                print(work_dir + " - " + class_name + " mode:"
+                      + str(run_mode))
                 self.run_copy(address, ana_name, grp_name, reqs_address,
                               obs_names, param)
             else:
-                for obs_name in tqdm(obs_names):  # repeat observation
+                work_dir = str(address[0]) + "_" + grp_name + \
+                    "/" + str(address[1]) + "_" + ana_name
+                print(work_dir + " - " + class_name + " mode:"
+                      + str(run_mode))
+                for obs_name in tqdm(obs_names, desc="Obs"):
                     if run_mode < 2:
-                        self.run_one_data(class_name, reqs_split, reqs_address,
-                                          obs_name, param, grp_name,
-                                          ana_name, run_mode, address)
+                        if type(obs_name) == list:
+                            self.run_one_data_multi_obs(
+                                class_name, reqs_split, reqs_address, obs_name,
+                                param, grp_name, ana_name, run_mode, address)
+                        else:
+                            self.run_one_data(
+                                class_name, reqs_split, reqs_address, obs_name,
+                                param, grp_name, ana_name, run_mode, address)
                     else:
                         self.run_multi_data(
                             class_name, reqs_split, reqs_address, obs_name,
@@ -470,6 +504,66 @@ class Pipeline():
             req_class_name = nm.get_class_name(info_path)
             R = eval(req_class_name)
             R.info.load(info_path)
+
+            if type(req_split) == list:
+                R.info.load_split_depth = req_split[0]
+                R.info.data_split_depth = req_split[1]
+            else:
+                R.info.load_split_depth = R.info.split_depth()
+                R.info.data_split_depth = req_split
+            R.load()
+            R.split(req_split)
+            reqs.append(R)
+
+        if "split_depth" not in param:
+            param["split_depth"] = reqs[0].info.data_split_depth
+
+        if run_mode == 1:
+            D.run_mp(reqs, param)
+        else:
+            D.run(reqs, param)
+
+        D.save()
+        del D
+        gc.collect()
+
+    def run_one_data_multi_obs(self, class_name, reqs_split, reqs_address,
+                               obs_names, param, grp_name, ana_name, run_mode,
+                               address):
+        """Execute a task that is not split into multiple files.
+
+        The first element of obs_names is used to the result file name.
+
+        Args:
+            class_name (str): :func:`eval()` executable class name string.
+            reqs_split (list): List of split depth of each required data.
+            reqs_address (list of tuple): List of required data address.
+            obs_names (list of str): Observation names.
+            param (dict): Parameter dictionary.
+            grp_name (str): Group name.
+            ana_name (str): Analysis name.
+            run_mode (int): Run mode number. This should be 0 or 1.
+            address (tuple): (group_no, analysis_no) of the result data.
+        """
+        D = eval(class_name)
+        D.info.set_path(ipath(self.root_dir, address[0], address[1],
+                              obs_names[0], ana_name, grp_name))
+        reqs = []
+        for obs_name, req_address, req_split in zip(
+                obs_names, reqs_address, reqs_split):
+            info_path = ipath(
+                self.root_dir, req_address[0], req_address[1], obs_name)
+            req_class_name = nm.get_class_name(info_path)
+            R = eval(req_class_name)
+            R.info.load(info_path)
+
+            if type(req_split) == list:
+                R.info.load_split_depth = req_split[0]
+                R.info.data_split_depth = req_split[1]
+            else:
+                R.info.load_split_depth = R.info.split_depth()
+                R.info.data_split_depth = req_split
+
             R.load()
             R.split(req_split)
             reqs.append(R)
@@ -501,6 +595,7 @@ class Pipeline():
         D = eval(class_name)
         D.info.set_path(ipath(self.root_dir, address[0], address[1],
                               obs_name, ana_name, grp_name))
+
         reqs = []
         for req_address, req_split in zip(reqs_address, reqs_split):
             info_path = ipath(
@@ -508,30 +603,26 @@ class Pipeline():
             req_class_name = nm.get_class_name(info_path)
             R = eval(req_class_name)
             R.info.load(info_path)
+            if type(req_split) == list:
+                R.info.load_split_depth = req_split[0]
+                R.info.data_split_depth = req_split[1]
+            else:
+                R.info.load_split_depth = R.info.split_depth()
+                R.info.data_split_depth = req_split
             reqs.append(R)
+
         if "split_depth" not in param:
-            param["split_depth"] = reqs[0].info.split_depth()
-        reqs_file_nos, save_nos = setreqs.set_reqs_file_nos(
-            reqs, param["split_depth"])
-        # if reqs are not required
-        if len(reqs_file_nos) == 0:
-            raise Exception("Mode 2,3 are not available.")
-        else:
-            for reqs_file_no, save_no in tqdm(
-                    zip(reqs_file_nos, save_nos), leave=False,
-                    total=len(save_nos)):
-                for req, req_split, req_file_no in zip(
-                        reqs, reqs_split, reqs_file_no):
-                    if ~np.isnan(req_file_no):
-                        req.load(req_file_no)
-                        req.split(req_split)
-                D.info.set_file_nos(save_no)
-                if run_mode == 3:
-                    D.run_mp(reqs, param)
-                else:
-                    D.run(reqs, param)
-                if ~np.isnan(save_no):
-                    D.save()
+            param["split_depth"] = reqs[0].info.data_split_depth
+
+        load_splits = []
+        data_splits = []
+        for req in reqs:
+            load_splits.append(req.info.load_split_depth)
+            data_splits.append(req.info.data_split_depth)
+
+        setreqs.run_cycle(D, reqs, param, load_splits,
+                          data_splits, run_mode)
+
         del D
         gc.collect()
 
@@ -564,6 +655,9 @@ class Pipeline():
                               param["obs_name"], ana_name, grp_name))
         param["merged_obs_names"] = obs_names
         reqs = []
+        if len(obs_names) != len(reqs_address):
+            raise Exception("obs_names and reqs_address must have the same "
+                            "length.")
         for obs_name, req_address in zip(obs_names, reqs_address):
             req_info_path = nm.make_info_path(
                 self.root_dir, req_address[0], req_address[1], obs_name)
@@ -623,15 +717,15 @@ class Pipeline():
 
         Args:
             address (tuple): (group_no, analysis_no) of copy destination.
-            ana_name (str): Analysis name.
-            grp_name (str): Group name.
+            ana_name (str): Analysis name of copy destination.
+            grp_name (str): Group name of copy destination.
             reqs_address (list of tuple): List containing only one data
                 address of copy source.
             obs_names (list of str): List containing only one observation
                 name of copy destination.
             param (dict): Parameter dictionary. This should have the
                 below item.
-            param["obs_name"] (str): Observation name of copy source.
+            param["obs_name"] (str, optional): Observation name of copy source.
 
         """
         if len(reqs_address) > 1:
@@ -642,6 +736,7 @@ class Pipeline():
             raise Exception("Only one observation is allowed.")
         else:
             new_obs_name = obs_names[0]
+        src_obs_name = param.get("obs_name") or new_obs_name
         if grp_name == "":
             raise Exception("Group name must be defined explicitly.")
 
@@ -650,8 +745,8 @@ class Pipeline():
             grp_name)
         new_dir = os.path.dirname(new_info_path)
 
-        src_info_path = ipath(
-            self.root_dir, req_address[0], req_address[1], param["obs_name"])
+        src_info_path = ipath(param.get("root_dir") or self.root_dir,
+                              req_address[0], req_address[1], src_obs_name)
         _, _, src_ana_name, src_grp_name = nm.split_info_path(src_info_path)
         src_class_name = nm.get_class_name(src_info_path)
 
@@ -662,8 +757,7 @@ class Pipeline():
             # change data file name
             new_data_name = src_data_name.replace(
                 src_grp_name + "_" + src_ana_name, grp_name + "_" + ana_name)
-            new_data_name = new_data_name.replace(
-                param["obs_name"], new_obs_name)
+            new_data_name = new_data_name.replace(src_obs_name, new_obs_name)
             new_data_path = os.path.join(new_dir, new_data_name)
             if os.path.exists(src_data_path):
                 shutil.copy2(src_data_path, new_data_path)
@@ -677,6 +771,44 @@ class Pipeline():
             info["meta"]["path"] = new_info_path
         with open(new_info_path, "w") as f:
             json.dump(info, f, indent=2)
+
+    def run_index(self, class_name, reqs_address, obs_names, param,
+                  grp_name, ana_name, address):
+        """A specific run method for tbl.convert.Index class.
+
+        :class:`slitflow.tbl.convert.Index` class is a class that create
+        a index table from required Data object. The class loads only the
+        index file of the required data. Therefore, the class does not need
+        to load the required data.
+
+        Args:
+            class_name (str): :func:`eval()` executable class name string.
+            reqs_address (list of tuple): List of required data address.
+            obs_name (list of str): Observation names.
+            param (dict): Parameter dictionary.
+            grp_name (str): Group name.
+            ana_name (str): Analysis name.
+            address (tuple): (group_no, analysis_no) of the result data.
+        """
+        for obs_name in tqdm(obs_names, desc="Obs"):
+            D = eval(class_name)
+            D.info.set_path(ipath(self.root_dir, address[0], address[1],
+                                  obs_name, ana_name, grp_name))
+            reqs = []
+            if len(reqs_address) > 1:
+                raise Exception("Only one required data address is available.")
+            req_address = reqs_address[0]
+            info_path = ipath(
+                self.root_dir, req_address[0], req_address[1], obs_name)
+            req_class_name = nm.get_class_name(info_path)
+            R = eval(req_class_name)
+            R.info.load(info_path)
+            R.data = ["dummy_data"]
+            reqs.append(R)
+            D.run(reqs, param)
+            D.save()
+            del D
+            gc.collect()
 
     def make_flowchart(self, fig_name, label_type, is_vertical=False,
                        scale=(0.5, 1), format="png", dpi=300):
@@ -703,6 +835,17 @@ class Pipeline():
             apply(lambda x: str(x))
         graph_df = graph_df.drop_duplicates()
 
+        # make list of address that is only in reqs_address
+        addresses = graph_df["address"].values.tolist()
+        addresses = [eval(x) for x in addresses]
+        reqs_only_addresses = []
+        for _, row in graph_df.iterrows():
+            reqs_addresses = eval(row.reqs_address)
+            for reqs_address in reqs_addresses:
+                if reqs_address not in addresses:
+                    reqs_only_addresses.append(reqs_address)
+        reqs_only_addresses = list(set(reqs_only_addresses))
+
         # fill grp_name and set grp color
         graph_df.loc[:, "grp_no"] = graph_df["address"].\
             apply(lambda x: eval(x)[0])
@@ -722,6 +865,10 @@ class Pipeline():
             re.sub("slitflow", "sf", x)[:-2]
             + ".__doc__.splitlines()[0]"))
 
+        for reqs_only_address in reqs_only_addresses:
+            graph_df.loc[len(graph_df)] = [
+                str(reqs_only_address), "", "input", "[]", None, None, None, None]
+
         # replace address
         node_df = graph_df[["address"]].reset_index(drop=True).reset_index()
         node_df = node_df.rename(columns={"index": "id"})
@@ -735,8 +882,6 @@ class Pipeline():
             lambda x: eval(x))
 
         # set class type
-        graph_df["class_type"] = graph_df["class_name"].apply(
-            lambda x: re.findall(r'sf\.(.*?)\.', x)[0])
         class_colors = [["img", rgb2hex(plt.cm.Set1(0)[:-1])],
                         ["tbl", rgb2hex(plt.cm.Set1(1)[:-1])],
                         ["trj", rgb2hex(plt.cm.Set1(2)[:-1])],
@@ -745,9 +890,16 @@ class Pipeline():
                         ["load", rgb2hex(plt.cm.Set1(5)[:-1])],
                         ["dev", rgb2hex((0.3, 0.3, 0.3))],
                         ["user", rgb2hex((0.3, 0.3, 0.3))]]
-        for class_color in class_colors:
-            graph_df.loc[graph_df["class_type"] == class_color[0],
-                         "class_color"] = class_color[1]
+        graph_df.reset_index(drop=True, inplace=True)
+        for i in range(len(graph_df)):
+            class_name = graph_df.loc[i, "class_name"]
+            if class_name is None:
+                graph_df.loc[i, "class_color"] = rgb2hex((0.3, 0.3, 0.3))
+            else:
+                class_type = re.findall(r'sf\.(.*?)\.', class_name)[0]
+                for class_color in class_colors:
+                    if class_type == class_color[0]:
+                        graph_df.loc[i, "class_color"] = class_color[1]
 
         # make graph
         edges = []
@@ -791,3 +943,21 @@ class Pipeline():
         path = os.path.join(self.root_dir, "g0_config", fig_name + ".png")
         plt.savefig(path, format=format, dpi=dpi,
                     bbox_inches='tight', pad_inches=0)
+
+    def rename_info_class(self, grp_no, ana_no, new_name):
+        """Rename info class name.
+
+        Rename class name of info.json file of saved required data.
+        This method is used if the class name of the saved data is changed.
+
+        Args:
+            grp_no (int): Group number.
+            ana_no (int): Analysis number.
+            new_name (str): New class name as slitflow.modulename.ClassName.
+        """
+        obs_names = get_obs_names(self.root_dir, (grp_no, ana_no))
+        for obs_name in obs_names:
+            info_path = ipath(self.root_dir, grp_no, ana_no, obs_name)
+            Info = info.Info([], info_path)
+            Info.rename_class_name(new_name)
+            print("Renamed: " + info_path)

@@ -1,8 +1,10 @@
 import os
 
+import numpy as np
 import pytest
 
 import slitflow as sf
+from slitflow.name import make_info_path as ipath
 
 
 @pytest.fixture
@@ -21,12 +23,17 @@ def test_Image(tmpdir, Index):
     D.load_data(path)
     assert D.data[0].shape == (3, 10, 10)
 
-    D.split_data()
+    D.split()
     assert D.data[0].shape == (3, 10, 10)
 
     D.data = []
-    D.split_data()
+    D.split()
     assert D.data == []
+
+    D.save_data(np.array([]), path)
+    D.data = [np.array([])]
+    D.split()
+    assert D.data[0].shape == (0,)
 
 
 def test_Image_set_info(Index):
@@ -75,11 +82,11 @@ def test_RGB(tmpdir, Index):
     D.load_data(path)
     assert D.data[0].shape == (9, 10, 10)
 
-    D.split_data()
+    D.split()
     assert D.data[0].shape == (9, 10, 10)
 
     D.data = []
-    D.split_data()
+    D.split()
     assert D.data == []
 
 

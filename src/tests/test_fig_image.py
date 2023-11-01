@@ -7,7 +7,7 @@ import slitflow as sf
 @pytest.fixture
 def Gray():
     D1 = sf.tbl.create.Index()
-    D1.run([], {"index_counts": [1], "type": "image",
+    D1.run([], {"index_counts": [2], "type": "image",
                 "split_depth": 0})
 
     D2 = sf.img.create.Black()
@@ -22,3 +22,22 @@ def test_Gray(Gray):
     D = sf.fig.image.Gray()
     D.run([Gray], {"lut_limits": [0, 4], "split_depth": 1})
     assert len(D.data[0].axes[0].get_children()) == 11
+
+    Gray.split(0)
+    D = sf.fig.image.Gray()
+    with pytest.raises(ValueError) as e:
+        D.run([Gray], {"lut_limits": [0, 4], "split_depth": 1})
+        e.match("Image should be split into a single frame image.")
+
+
+@pytest.fixture
+def RGB():
+    D1 = sf.tbl.create.Index()
+    D1.run([], {"index_counts": [2], "type": "image",
+                "split_depth": 0})
+
+    D2 = sf.img.create.RandomRGB()
+    D2.run([D1], {"pitch": 0.1, "interval": 0.1,
+                  "img_size": [5, 5], "length_unit": "um",
+                  "split_depth": 1})
+    return D2

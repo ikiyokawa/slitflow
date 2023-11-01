@@ -5,9 +5,16 @@ import slitflow as sf
 if __name__ == '__main__':  # This line is needed if multiprocessing is used.
 
     # make a project directory (in the user directory)
-    prj_dir = os.path.join(os.path.expanduser(
-        "~"), "slitflow", "examples_particle_movie_simulation")
-    PL = sf.manager.Pipeline(prj_dir)
+    root_dir = "slitflow_tutorial"
+    project_dir = os.path.join(root_dir, "examples_particle_movie_simulation")
+
+    # Create directories
+    if not os.path.isdir(root_dir):
+        os.makedirs(root_dir)
+    if not os.path.isdir(project_dir):
+        os.makedirs(project_dir)
+
+    PL = sf.manager.Pipeline(project_dir)
 
     PL.add(sf.tbl.create.Index(), 0, (1, 1), "trj", "index",
            ["Particles"], [], [],

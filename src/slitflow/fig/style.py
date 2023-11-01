@@ -299,7 +299,7 @@ class ParamTable(Basic):
     def set_reqs(self, reqs=None, param=None):
         """Drop elements that exist only in one required data.
         """
-        self.reqs = setreqs.and_2reqs(reqs)
+        self.reqs = setreqs.allocate_data(reqs, param)
 
     @ staticmethod
     def process(reqs, param):
@@ -1081,8 +1081,20 @@ def set_cmap(fig, cmap, axes_no=0):
         if type(artist) in [mpl.collections.PathCollection,
                             mpl.collections.PatchCollection,
                             mpl.image.AxesImage]:
-            artist.set_cmap(cmap)
+            if type(cmap) == str:
+                artist.set_cmap(cmap)
+            elif type(cmap) == list:
+                linear_segmented_colormap = rgb2cmap(cmap)
+                artist.set_cmap(linear_segmented_colormap)
     return fig
+
+
+def rgb2cmap(rgb):
+    cdict = {'red': ((0.0, 0.0, 0.0), (1.0, rgb[0] / 255, 1.0)),
+             'green': ((0.0, 0.0, 0.0), (1.0, rgb[1] / 255, 1.0)),
+             'blue': ((0.0, 0.0, 0.0), (1.0, rgb[2] / 255, 1.0))
+             }
+    return LinearSegmentedColormap('custom_cmap', cdict, 256)
 
 
 def set_clim(fig, vmin, vmax, axes_no=0):

@@ -4,6 +4,7 @@ import psutil
 import os
 import sys
 import pickle
+import copy
 
 from .info import Info
 from . import name as nm
@@ -42,53 +43,102 @@ class Data():
     def __init__(self, info_path=None):
         self.reqs = None
         self.data = []
+        self.keep = []
         self.info = Info(self, info_path)
         self.n_worker = np.max(
             [np.floor(os.cpu_count() * Data.CPU_RATE).astype(int), 1])
         self.memory_limit = Data.MEMORY_LIMIT * 100
+        self.reqs_are_ready = False
 
     def load(self, file_nos=None):
         """Load and split data files.
         """
+        if self.info.load_split_depth is None:
+            self.info.load_split_depth = self.info.split_depth()
+
         self.info.set_file_nos(file_nos)
+
+        if len(self.keep) == 0:
+            self.load_from_file()
+            return
+        index = self.info.index.copy()
+        if len(index) == 0:
+            self.load_from_keep()
+            return
+        split_non_zero = index[index['_split'] != 0]
+        if all(split_non_zero['_keep'] != 0):
+            self.load_from_keep()
+        else:
+            self.load_from_file()
+
+    def load_from_file(self):
+        self.data = []
         if not hasattr(self.info, "data_paths"):
             self.info.data_paths = nm.load_data_paths(self.info, self.EXT)
-        dfs = []
-        for i, path in enumerate(self.info.data_paths):
+        for i, path in enumerate(self.info.data_paths, 1):
             if psutil.virtual_memory().percent > self.memory_limit:
                 raise Exception("Memory usage limit reached.")
-            if i in self.info.file_nos:
-                dfs.append(self.load_data(path))
-        self.data = dfs
-        self.split(self.info.split_depth())
+            if i in self.info.file_nos():
+                self.data.append(self.load_data(path))
+        self.split(self.info.load_split_depth)
+        self.keep_data()
+
+    def load_from_keep(self):
+        index = self.info.index.copy()
+        self.data = copy.deepcopy(self.keep)
+        if len(index) == 0:
+            return
+        index["_dest"] = index["_split"]
+        index["_split"] = index["_keep"]
+        self.split(index=index)
+        self.split(self.info.load_split_depth)
 
     def load_data(self, path):
         """Implement in each subclass.
         """
         pass
 
-    def save(self):
-        """Split and save data files.
-        """
-        self.split(self.info.split_depth())
+    def save(self, clear=True):
+        if len(self.data) == 0:
+            return
         self.info.data_paths = nm.make_data_paths(self.info, self.EXT)
         for data, path in zip(self.data, self.info.data_paths):
             if data is not None:
                 self.save_data(data, path)
         self.info.save()
-        self.data = []
+        if clear:
+            self.clear_data()
+            self.info.index["_split"] = 0
 
     def save_data(self, data, path):
         """Implement in each subclass.
         """
         print("save_data() is not defined.")
 
-    def split(self, split_depth):
+    def clear_data(self):
+        self.data = []
+        self.info.index["_split"] = 0
+
+    def keep_data(self):
+        self.keep = copy.deepcopy(self.data)
+        self.info.index["_keep"] = self.info.index["_split"]
+
+    def split(self, split_depth=None, index=None):
         """Split info index and data.
         """
-        self.info.split(split_depth)
-        if len(self.data) > 0:
-            self.split_data()
+        if index is not None:
+            self.info.index = index
+        else:
+            self.info.split(split_depth)
+        if len(self.data) == 0:
+            if np.min(self.info.index["_dest"]) < 0:
+                # _dest containing minus value, filled with None
+                self.split_data()
+        else:
+            if not all(self.info.index["_split"] == self.info.index["_dest"]):
+                self.split_data()
+        self.info.index["_split"] = self.info.index["_dest"]
+        self.info.index.drop("_dest", axis=1, inplace=True)
 
     def set_split(self, split_depth):
         """Split info index and data.
@@ -96,6 +146,7 @@ class Data():
         This method can be used to overwrite ``split_depth``.
         """
         self.info.set_split_depth(split_depth)
+        self.info.split(split_depth)
         if len(self.data) > 0:
             self.split_data()
 
@@ -110,7 +161,7 @@ class Data():
         """Preparation of required data.
 
         This step strongly depends on the analysis type. Frequently used
-        processes are in  :mod:`slitflow.setreqs`.
+        processes are in :mod:`slitflow.setreqs`.
 
         """
         if reqs is None:
@@ -152,7 +203,13 @@ class Data():
             reqs (list of any): List of required data.
             param (dict): Dictionary of parameters.
         """
-        if reqs is not None:
+
+        if "split_depth" not in param:
+            param["split_depth"] = reqs[0].info.data_split_depth
+
+        if self.reqs_are_ready:
+            self.reqs = reqs
+        else:
             self.set_reqs(reqs, param)
         if param is not None:
             self.set_info(param)
@@ -163,7 +220,7 @@ class Data():
             reqs_data.append(req.data)
         reqs_data = list(zip(*reqs_data))
         param = self.info.get_param_dict()
-        for req_data in tqdm(reqs_data, leave=False):
+        for req_data in tqdm(reqs_data, desc="Prc", leave=False):
             if psutil.virtual_memory().percent > self.memory_limit:
                 raise Exception("Memory usage limit reached.")
             self.data.append(self.process(list(req_data), param))
@@ -171,6 +228,7 @@ class Data():
         self.info.set_meta()
         self.set_index()
         self.split(self.info.split_depth())
+        self.reqs_are_ready = False
 
     def run_mp(self, reqs=None, param=None):
         """Execute run method using multiple CPU.
@@ -178,7 +236,13 @@ class Data():
         This method uses :class:`~concurrent.futures.ProcessPoolExecutor`.
 
         """
-        if reqs is not None:
+
+        if "split_depth" not in param:
+            param["split_depth"] = reqs[0].info.data_split_depth
+
+        if self.reqs_are_ready:
+            self.reqs = reqs
+        else:
             self.set_reqs(reqs, param)
         if param is not None:
             self.set_info(param)
@@ -197,13 +261,14 @@ class Data():
                     self.process, list(req_data), param)
                 futures.append(future)
             data_list = []
-            for x in tqdm(futures, leave=False):
+            for x in tqdm(futures, desc="Prc", leave=False):
                 data_list.append(x.result())
             self.data.extend(data_list)
         self.post_run()
         self.info.set_meta()
         self.set_index()
         self.split(self.info.split_depth())
+        self.reqs_are_ready = False
 
     def post_run(self):
         """Implement in each subclass.

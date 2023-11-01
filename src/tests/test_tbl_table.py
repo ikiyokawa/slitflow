@@ -15,19 +15,20 @@ def test_Table(tmpdir):
     D.load_data(path)
     assert D.data[0].equals(pd.DataFrame({"img_no": [1], "trj_no": [1]}))
 
-    D.split_data()
+    D.split()
     assert D.data[0].equals(pd.DataFrame({"img_no": [1], "trj_no": [1]}))
 
     D.data = []
-    D.split_data()
-    assert D.data == []
+    with pytest.raises(Exception) as e:
+        D.split
+        assert e.match("No objects to concatenate")
 
     del D
     D = sf.tbl.create.Index()
     D.run([], {"index_counts": [1, 1], "type": "trajectory",
                "split_depth": 0})
     D.info.index = pd.DataFrame()
-    D.split_data()
+    D.split()
     assert D.data[0].equals(pd.DataFrame({"img_no": [1], "trj_no": [1]}))
 
 

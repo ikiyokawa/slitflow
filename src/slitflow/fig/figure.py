@@ -1,4 +1,7 @@
+
 import io
+import os
+import tempfile
 
 import numpy as np
 import cv2
@@ -6,7 +9,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from ..img.image import RGB
-from ..data import Pickle
+from ..data import Data, Pickle
 from .. import MATPLOTLIB_BACKEND
 
 matplotlib.use(MATPLOTLIB_BACKEND)
@@ -52,6 +55,9 @@ class ToTiff(RGB):
     def set_info(self, param={}):
         """Copy information from reqs[0] and add parameters.
         """
+        if self.reqs[0].info.data_split_depth != \
+                self.reqs[0].info.split_depth():
+            raise Exception("Data should split to the file split depth")
         self.info.copy_req(0)
         if "dpi" not in param:
             param["dpi"] = 400
@@ -136,8 +142,15 @@ def get_stack(fig, dpi):
 
 
 def inherit_split_depth(Data, reqs_no, group_depth):
+    """Set the group and split depth based on the reqs data.
+
+    Args:
+        Data (Data): Target Data object to set split_depth.
+        reqs_no (int): Required Data number to get split_depth.
+        group_depth (int): Data grouping depth number to set calc_cols.
+    """
     Data.info.set_group_depth(group_depth)
-    split_depth = Data.reqs[reqs_no].info.split_depth_req
+    split_depth = Data.reqs[reqs_no].info.data_split_depth
     keeps = Data.info.get_column_name("index")[:split_depth]
     Data.info.delete_column(keeps=keeps)
     Data.info.set_split_depth(split_depth)

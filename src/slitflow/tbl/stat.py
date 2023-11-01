@@ -50,7 +50,7 @@ class Mean(Table):
         self.info.copy_req(0)
 
         if "index_cols" not in param:
-            split_depth = self.reqs[0].info.split_depth()
+            split_depth = self.reqs[0].info.data_split_depth
             index_cols = self.reqs[0].info.get_column_name("index")
             param["index_cols"] = index_cols[:split_depth]
         self.info.delete_column(keeps=param["index_cols"])

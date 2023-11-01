@@ -21,7 +21,7 @@ copyright = '2022-2023, Yuma Ito'
 author = 'Yuma Ito'
 
 release = '0.1'
-version = '0.1.4'
+version = '0.1.5'
 
 # -- General configuration ----------------------------------------------------
 

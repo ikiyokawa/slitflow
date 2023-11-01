@@ -18,5 +18,6 @@ def test_CutOffPixelQuantile(Index):
     D.run([Index], {"calc_col": "trj_no", "cut_factor": 0, "ignore_zero": True,
                     "split_depth": 0})
 
-    assert D.data[0].equals(
-        pd.DataFrame({"img_no": [1, 1], "trj_no": [4, 5]}))
+    result_data = D.data[0].reset_index(drop=True)
+    target_data = pd.DataFrame({"img_no": [1, 1], "trj_no": [4, 5]})
+    assert result_data.equals(target_data)

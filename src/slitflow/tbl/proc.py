@@ -45,6 +45,8 @@ class MaskFromParam(Table):
     def process(reqs, param):
         """Create a mask column based on explicit param values.
 
+        If the element of the tuple is one, a comma must be added.
+
         Args:
             reqs[0] (Table): The image to select from.
             param["index"] (list of tuple): A list of tuples that contains the
@@ -61,14 +63,14 @@ class MaskFromParam(Table):
         df = reqs[0].copy()
         index_cols = param.get("index_cols")
         mask_col = param.get("mask_col", "mask")
-        index = param.get("index", [])
+        indexes_list = param.get("index", [])
 
         sel_ary = np.empty((0, len(index_cols)), int)
         idx_ary = df[index_cols].to_numpy()
 
-        for idx_tuple in index:
+        for indexes in indexes_list:
             depth_ary = idx_ary.copy()
-            for depth, idx in enumerate(idx_tuple):
+            for depth, idx in enumerate(indexes):
                 if type(idx) is int:
                     depth_ary = depth_ary[depth_ary[:, depth] == idx, :]
                 elif idx is None:
@@ -150,6 +152,14 @@ class SelectParam(MaskFromParam):
             df_mask[param["index_cols"] + [param["mask_col"]]])
         df_sel = df_sel.drop(columns=param["mask_col"])
         return df_sel
+
+    def post_run(self):
+        """Remove empty data"""
+        skipped_data = []
+        for data in self.data:
+            if data.shape[0] > 0:
+                skipped_data.append(data)
+        self.data = skipped_data
 
     def set_index(self):
         """Set the index based on the saved temporal index.

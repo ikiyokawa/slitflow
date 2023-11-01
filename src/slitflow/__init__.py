@@ -1,6 +1,6 @@
 RANDOM_SEED = 42
 MATPLOTLIB_BACKEND = "Agg"
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 from . import data
 from . import info

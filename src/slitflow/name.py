@@ -11,7 +11,7 @@ from .fun.sort import natural_sort
 
 
 def make_info_path(root_dir, grp_no, ana_no, obs_name,
-                   ana_name=None, grp_name=""):
+                   ana_name="", grp_name=""):
     """Return an info path with creating all folders required.
 
     Args:
@@ -34,7 +34,7 @@ def make_info_path(root_dir, grp_no, ana_no, obs_name,
     else:  # create group folder
         grp_dir = make_group(root_dir, grp_no, grp_name)
     ana_id = "a" + str(ana_no)
-    if ana_name is None:  # find from folder
+    if not ana_name:  # find from folder
         path = os.path.join(grp_dir, ana_id + "_*")
         ana_dirs = glob.glob(path)
         if len(ana_dirs) == 1:
@@ -91,13 +91,15 @@ def make_data_paths(Info, ext):
         list of str: List of paths to the data files
     """
     depth_ids = Info.get_depth_id()
-    if depth_ids is None:  # data path is the same as info path
+    if depth_ids is None or len(depth_ids) == 0:
+        # data path is the same as info path
         info_path = os.path.splitext(Info.path)[0] + ext
         return [info_path]
     ana_path, obs_name, ana_name, grp_name = split_info_path(Info.path)
     data_paths = []
     for depth_id in depth_ids:
-        file_name = obs_name + "_" + depth_id + "_" + grp_name + "_" + ana_name + ext
+        file_name = obs_name + "_" + depth_id + "_" + grp_name + "_" + \
+            ana_name + ext
         data_paths.append(os.path.join(ana_path, file_name))
     return natural_sort(data_paths)
 
@@ -139,7 +141,7 @@ def make_group(root_dir, grp_no, grp_name):
     if len(glob.glob(path_wildcard)) > 0:
         raise Exception("Group No." + str(grp_no) + " is used as other name.")
     else:
-        os.mkdir(grp_dir)
+        os.makedirs(grp_dir)
     return grp_dir
 
 
